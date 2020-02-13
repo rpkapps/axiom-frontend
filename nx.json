@@ -20,6 +20,9 @@
     },
     "infrastructure": {
       "tags": ["lib"]
+    },
+    "ui": {
+      "tags": ["lib"]
     }
   }
 }

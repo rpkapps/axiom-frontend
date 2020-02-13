@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@axiom/infrastructure": ["libs/infrastructure/src/index.ts"]
+      "@axiom/infrastructure": ["libs/infrastructure/src/index.ts"],
+      "@axiom/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
