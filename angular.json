@@ -5,7 +5,7 @@
       "projectType": "application",
       "schematics": {
         "@nrwl/angular:component": {
-          "style": "less"
+          "style": "scss"
         }
       },
       "root": "apps/analytics",
@@ -25,7 +25,10 @@
               "apps/analytics/src/favicon.ico",
               "apps/analytics/src/assets"
             ],
-            "styles": ["apps/analytics/src/styles.less"],
+            "styles": [
+              "libs/ui/src/styles/core.scss",
+              "apps/analytics/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -83,7 +86,10 @@
               "apps/analytics/tsconfig.app.json",
               "apps/analytics/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/analytics/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/analytics/**"
+            ]
           }
         },
         "test": {
@@ -117,8 +123,13 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/analytics-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/analytics-e2e/**"]
+            "tsConfig": [
+              "apps/analytics-e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/analytics-e2e/**"
+            ]
           }
         }
       }
@@ -136,7 +147,10 @@
               "libs/infrastructure/tsconfig.lib.json",
               "libs/infrastructure/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/infrastructure/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/infrastructure/**"
+            ]
           }
         },
         "test": {
@@ -150,7 +164,7 @@
       },
       "schematics": {
         "@nrwl/angular:component": {
-          "styleext": "less"
+          "styleext": "scss"
         }
       }
     },
@@ -167,7 +181,10 @@
               "libs/ui/tsconfig.lib.json",
               "libs/ui/tsconfig.spec.json"
             ],
-            "exclude": ["**/node_modules/**", "!libs/ui/**"]
+            "exclude": [
+              "**/node_modules/**",
+              "!libs/ui/**"
+            ]
           }
         },
         "test": {
@@ -181,7 +198,7 @@
       },
       "schematics": {
         "@nrwl/angular:component": {
-          "styleext": "less"
+          "styleext": "scss"
         }
       }
     }
