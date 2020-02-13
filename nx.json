@@ -17,6 +17,9 @@
     "analytics-e2e": {
       "tags": [],
       "implicitDependencies": ["analytics"]
+    },
+    "infrastructure": {
+      "tags": ["lib"]
     }
   }
 }

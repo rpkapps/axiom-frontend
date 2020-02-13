@@ -122,6 +122,37 @@
           }
         }
       }
+    },
+    "infrastructure": {
+      "projectType": "library",
+      "root": "libs/infrastructure",
+      "sourceRoot": "libs/infrastructure/src",
+      "prefix": "axiom",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/infrastructure/tsconfig.lib.json",
+              "libs/infrastructure/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!libs/infrastructure/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/infrastructure/jest.config.js",
+            "tsConfig": "libs/infrastructure/tsconfig.spec.json",
+            "setupFile": "libs/infrastructure/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "less"
+        }
+      }
     }
   },
   "cli": {
