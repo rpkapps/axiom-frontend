@@ -23,10 +23,10 @@ export class CommunicationService {
   }
 
   sendCommand(command: ICommand) {
-    this._http.post<ICommand>(this.config.ApiUrl, command);
+    this._http.post<ICommand>(`${this.config.ApiUrl}/Command`, command);
   }
 
   sendQuery(query: IQuery) {
-    this._http.post<ICommand>(this.config.ApiUrl, query);
+    this._http.post<ICommand>(`${this.config.ApiUrl}/Query`, query);
   }
 }
