@@ -1,0 +1,9 @@
+@import 'file-upload/theme';
+
+@mixin ui-theme($theme) {
+  @include ui-file-upload-theme($theme);
+}
+
+@mixin ui-typography($config: null) {
+  @include ui-file-upload-typography($config);
+}

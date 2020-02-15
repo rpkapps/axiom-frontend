@@ -1,7 +1,8 @@
+import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ConfigCommand } from '@angular/cli/commands/config-impl';
-import { ICommand, IConfig, IQuery } from './symbols';
+import { asyncScheduler, of } from 'rxjs';
+import { catchError, filter, map, throttleTime } from 'rxjs/operators';
+import { ICommand, IConfig, IQuery, IUploadResponse } from './symbols';
 
 @Injectable({
   providedIn: 'root'
@@ -23,10 +24,55 @@ export class CommunicationService {
   }
 
   sendCommand(command: ICommand) {
-    this._http.post<ICommand>(`${this.config.ApiUrl}/Command`, command);
+    return this._http.post<ICommand>(`${ this.config.ApiUrl }/Command`, command);
   }
 
   sendQuery(query: IQuery) {
-    this._http.post<ICommand>(`${this.config.ApiUrl}/Query`, query);
+    return this._http.post<ICommand>(`${ this.config.ApiUrl }/Query`, query);
+  }
+
+  upload(file: File) {
+    const formData = new FormData();
+    formData.set('file', file, file.name);
+
+    const response = <IUploadResponse> {
+      Name: file.name,
+      Size: file.size,
+      Type: file.type,
+      Progress: 0,
+      BytesLoaded: 0,
+      StatusText: ''
+    };
+
+    return this._http.post(`${ this.config.ApiUrl }/Upload`, formData, {
+      observe: 'events',
+      reportProgress: true,
+      responseType: 'json'
+    }).pipe(
+      filter(event =>
+        event.type === HttpEventType.UploadProgress ||
+        event.type === HttpEventType.Response
+      ),
+      // Throttle to prevent choppy progress animations
+      throttleTime(250, asyncScheduler, { trailing: true }),
+      map((event: any) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          response.Status = 'uploading';
+          response.BytesLoaded = event.loaded;
+          response.Progress = Math.floor(event.loaded * 100 / event.total);
+          console.log(response.Progress);
+        } else {
+          response.Status = 'done';
+          response.BytesLoaded = file.size;
+          response.Progress = 100;
+        }
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        response.Status = 'error';
+        response.StatusText = error.statusText;
+        return of(response);
+      })
+    );
   }
 }

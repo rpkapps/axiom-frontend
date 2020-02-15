@@ -6,6 +6,9 @@
       "schematics": {
         "@nrwl/angular:component": {
           "style": "scss"
+        },
+        "@schematics/angular:component": {
+          "styleext": "scss"
         }
       },
       "root": "apps/analytics",

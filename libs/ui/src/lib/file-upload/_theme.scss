@@ -1,0 +1,26 @@
+@import '../../styles/variables';
+
+@mixin ui-file-upload-theme($theme) {
+  $warn: map-get($theme, warn);
+  $success: map-get($theme, success);
+
+  .ui-file-upload {
+    &-error {
+      color: mat-color($warn, text);
+    }
+
+    &-done {
+      color: mat-color($success, text);
+    }
+  }
+}
+
+@mixin ui-file-upload-typography($theme) {
+  $warn: map-get($theme, warn);
+
+  .ui-file-upload {
+    &-error {
+      color: mat-color($warn, text);
+    }
+  }
+}
