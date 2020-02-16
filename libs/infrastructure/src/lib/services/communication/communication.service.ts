@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/ht
 import { Injectable } from '@angular/core';
 import { asyncScheduler, of } from 'rxjs';
 import { catchError, filter, map, throttleTime } from 'rxjs/operators';
+import { generateId } from '../../utilities';
 import { ICommand, IConfig, IQuery, IUploadResponse } from './symbols';
 
 @Injectable({
@@ -32,10 +33,12 @@ export class CommunicationService {
   }
 
   upload(file: File) {
+    const fileId = generateId();
     const formData = new FormData();
-    formData.set('file', file, file.name);
+    formData.set('File', file, fileId);
 
     const response = <IUploadResponse> {
+      FileId: fileId,
       Name: file.name,
       Size: file.size,
       Type: file.type,
@@ -60,8 +63,8 @@ export class CommunicationService {
           response.Status = 'uploading';
           response.BytesLoaded = event.loaded;
           response.Progress = Math.floor(event.loaded * 100 / event.total);
-          console.log(response.Progress);
         } else {
+          response.FileId = event.body.FileId;
           response.Status = 'done';
           response.BytesLoaded = file.size;
           response.Progress = 100;

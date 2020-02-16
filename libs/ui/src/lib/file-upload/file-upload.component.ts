@@ -1,6 +1,4 @@
-import {
-  ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'ui-file-upload',
@@ -11,7 +9,7 @@ import {
     'class': 'ui-file-upload'
   }
 })
-export class UiFileUploadComponent implements OnChanges {
+export class UiFileUploadComponent {
   @Input('uiFileName') fileName: string;
   @Input('uiProgress') progress: number;
   @Input('uiStatusText') statusText: string;
@@ -22,10 +20,6 @@ export class UiFileUploadComponent implements OnChanges {
   file: File;
 
   constructor() { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
 
   onFileChange(file: File) {
     this.file = file;

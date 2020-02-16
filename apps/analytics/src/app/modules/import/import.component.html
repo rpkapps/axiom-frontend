@@ -1,9 +1,9 @@
-<ng-container *ngIf="importService.importViewModel$ | async as vm">
+<ng-container *ngIf="importService.uploadFileResponse$ | async as uploadFileResponse">
   <ui-file-upload
-    [uiFileName]="vm.UploadResponse?.Name"
-    [uiProgress]="vm.UploadResponse?.Progress"
-    [uiStatus]="vm.UploadResponse?.Status"
-    [uiStatusText]="vm.UploadResponse?.StatusText"
+    [uiFileName]="uploadFileResponse?.Name"
+    [uiProgress]="uploadFileResponse?.Progress"
+    [uiStatus]="uploadFileResponse?.Status"
+    [uiStatusText]="uploadFileResponse?.StatusText"
     (uiFileChange)="importService.upload($event)">
     Upload File
   </ui-file-upload>
