@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { UiFileUploadModule } from '@axiom/ui';
 import { ImportComponent } from './import.component';
 
 
@@ -11,7 +10,6 @@ import { ImportComponent } from './import.component';
   ],
   imports: [
     CommonModule,
-    UiFileUploadModule,
   ]
 })
 export class ImportModule {}

@@ -3,16 +3,15 @@ import { Injectable, NgZone } from '@angular/core';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { asyncScheduler, of, Subject } from 'rxjs';
 import { catchError, filter, map, throttleTime } from 'rxjs/operators';
-import { generateId } from '../../utilities';
-import { ICommand, IConfig, IQuery, IUploadResponse } from './symbols';
+import { ICommand, IConfig, INotification, IQuery, IUploadResponse } from './symbols';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommunicationService {
   config: IConfig;
-  private _message$ = new Subject<any>();
-  message$ = this._message$.asObservable();
+  private _notification$ = new Subject<INotification>();
+  notification$ = this._notification$.asObservable();
 
   private _retryTime = 10000;
 
@@ -22,30 +21,23 @@ export class CommunicationService {
   ) { }
 
   init() {
-    this.loadConfig().then(() => this.startHubConnection())
-  }
-
-  loadConfig() {
-    return this._http.get<IConfig>('/assets/config.json')
-      .toPromise()
-      .then(config => this.config = config);
+    return this.loadConfig().then(() => this.startHubConnection());
   }
 
   sendCommand(command: ICommand) {
-    return this._http.post<ICommand>(`${ this.config.ApiUrl }/command`, command);
+    return this._http.post<ICommand>(`${ this.config.ApiUrl }/command`, command).toPromise();
   }
 
-  sendQuery(query: IQuery) {
-    return this._http.post<ICommand>(`${ this.config.ApiUrl }/query`, query);
+  sendQuery<T>(query: IQuery) {
+    return this._http.post<T>(`${ this.config.ApiUrl }/query`, query).toPromise();
   }
 
   upload(file: File) {
-    const fileId = generateId();
     const formData = new FormData();
-    formData.set('File', file, fileId);
+    formData.set('File', file);
 
     const response = <IUploadResponse> {
-      FileId: fileId,
+      FileId: null,
       Name: file.name,
       Size: file.size,
       Type: file.type,
@@ -86,6 +78,12 @@ export class CommunicationService {
     );
   }
 
+  private loadConfig() {
+    return this._http.get<IConfig>('/assets/config.json')
+      .toPromise()
+      .then(config => this.config = config);
+  }
+
   private startHubConnection(): Promise<void> {
     return this._ngZone.runOutsideAngular(() => {
       const connection = new HubConnectionBuilder()
@@ -103,7 +101,7 @@ export class CommunicationService {
 
       connection.onclose(() => reconnect());
       connection.on('Notify', data => {
-        this._ngZone.run(() => this._message$.next(data));
+        this._ngZone.run(() => this._notification$.next(data));
       });
 
       return connection

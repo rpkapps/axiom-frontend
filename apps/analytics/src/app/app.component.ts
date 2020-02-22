@@ -7,6 +7,6 @@ import { Component, DoCheck } from '@angular/core';
 })
 export class AppComponent implements DoCheck {
   ngDoCheck() {
-    // console.log('CHANGE DETECTION');
+    console.log('CHANGE DETECTION');
   }
 }
