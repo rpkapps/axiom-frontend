@@ -1,4 +1,4 @@
 {
-  "ApiUrl": "http://localhost:5000/Api",
-  "SignalR": "http://localhost:5000/SignalR"
+  "ApiUrl": "http://localhost:5000/api/analytics",
+  "SignalRUrl": "http://localhost:5000/signalr/analytics"
 }

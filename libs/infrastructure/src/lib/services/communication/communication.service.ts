@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { asyncScheduler, of } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { HubConnectionBuilder } from '@aspnet/signalr';
+import { asyncScheduler, of, Subject } from 'rxjs';
 import { catchError, filter, map, throttleTime } from 'rxjs/operators';
 import { generateId } from '../../utilities';
 import { ICommand, IConfig, IQuery, IUploadResponse } from './symbols';
@@ -10,26 +11,32 @@ import { ICommand, IConfig, IQuery, IUploadResponse } from './symbols';
 })
 export class CommunicationService {
   config: IConfig;
+  private _message$ = new Subject<any>();
+  message$ = this._message$.asObservable();
+
+  private _retryTime = 10000;
 
   constructor(
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _ngZone: NgZone
   ) { }
+
+  init() {
+    this.loadConfig().then(() => this.startHubConnection())
+  }
 
   loadConfig() {
     return this._http.get<IConfig>('/assets/config.json')
       .toPromise()
-      .then(config => {
-        this.config = config;
-        return true;
-      });
+      .then(config => this.config = config);
   }
 
   sendCommand(command: ICommand) {
-    return this._http.post<ICommand>(`${ this.config.ApiUrl }/Command`, command);
+    return this._http.post<ICommand>(`${ this.config.ApiUrl }/command`, command);
   }
 
   sendQuery(query: IQuery) {
-    return this._http.post<ICommand>(`${ this.config.ApiUrl }/Query`, query);
+    return this._http.post<ICommand>(`${ this.config.ApiUrl }/query`, query);
   }
 
   upload(file: File) {
@@ -47,7 +54,7 @@ export class CommunicationService {
       StatusText: ''
     };
 
-    return this._http.post(`${ this.config.ApiUrl }/Upload`, formData, {
+    return this._http.post(`${ this.config.ApiUrl }/upload`, formData, {
       observe: 'events',
       reportProgress: true,
       responseType: 'json'
@@ -77,5 +84,31 @@ export class CommunicationService {
         return of(response);
       })
     );
+  }
+
+  private startHubConnection(): Promise<void> {
+    return this._ngZone.runOutsideAngular(() => {
+      const connection = new HubConnectionBuilder()
+        .withUrl(this.config.SignalRUrl)
+        .build();
+
+      const reconnect = () => {
+        const handle = setInterval(() => {
+          connection
+            .start()
+            .then(() => clearInterval(handle))
+            .catch(e => {});
+        }, this._retryTime);
+      };
+
+      connection.onclose(() => reconnect());
+      connection.on('Notify', data => {
+        this._ngZone.run(() => this._message$.next(data));
+      });
+
+      return connection
+        .start()
+        .catch(() => reconnect());
+    });
   }
 }

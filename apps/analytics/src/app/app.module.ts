@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { ImportModule } from './modules/import/import.module';
 
 export function initializeApp(com: CommunicationService) {
-  return () => com.loadConfig();
+  return () => com.init();
 }
 
 @NgModule({

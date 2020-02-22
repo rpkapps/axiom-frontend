@@ -21,7 +21,7 @@
 
 <ng-template #uploadButton>
   <input #fileInput class="ui-file-upload-input" type="file" (change)="onFileChange(fileInput.files[0])">
-  <button class="ui-file-upload-button" color="accent" mat-flat-button (click)="fileInput.click()">
+  <button class="ui-file-upload-button" color="accent" mat-flat-button disableRipple (click)="fileInput.click()">
     <ng-content></ng-content>
   </button>
 </ng-template>
