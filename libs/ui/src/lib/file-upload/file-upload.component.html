@@ -1,13 +1,18 @@
 <ng-container [ngSwitch]="status">
   <mat-card *ngSwitchCase="'uploading'">
     <span class="ui-file-upload-label">{{ file?.name || fileName }}</span>
-    <mat-progress-bar *ngIf="progress" class="ui-file-upload-progress" [value]="progress" color="accent"></mat-progress-bar>
+    <mat-progress-bar
+      *ngIf="progress || progress === 0"
+      class="ui-file-upload-progress"
+      color="accent"
+      [value]="progress"></mat-progress-bar>
   </mat-card>
   <mat-card *ngSwitchCase="'done'" class="ui-file-upload-done">
     Done
   </mat-card>
-  <mat-card class="ui-file-upload-error-wrapper" *ngSwitchCase="'error'">
-    <ng-container [ngTemplateOutlet]="uploadButton"></ng-container> <span class="ui-file-upload-error">{{ file?.name || fileName }}: {{ statusText || 'Error uploading' }}</span>
+  <mat-card *ngSwitchCase="'error'" class="ui-file-upload-error-wrapper">
+    <ng-container [ngTemplateOutlet]="uploadButton"></ng-container>
+    <span class="ui-file-upload-error">{{ file?.name || fileName }}: {{ statusText || 'Error uploading' }}</span>
   </mat-card>
   <mat-card *ngSwitchDefault class="ui-file-upload-default-wrapper">
     <ng-container [ngTemplateOutlet]="uploadButton"></ng-container>
@@ -16,7 +21,7 @@
 
 <ng-template #uploadButton>
   <input #fileInput class="ui-file-upload-input" type="file" (change)="onFileChange(fileInput.files[0])">
-  <button class="ui-file-upload-button" color="accent" disableRipple mat-flat-button (click)="fileInput.click()">
+  <button class="ui-file-upload-button" color="accent" mat-flat-button (click)="fileInput.click()">
     <ng-content></ng-content>
   </button>
 </ng-template>
