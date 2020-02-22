@@ -1,11 +1,10 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-
-import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { CommunicationService } from '@axiom/infrastructure';
 import { HttpClientModule } from '@angular/common/http';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { CommunicationService } from '@axiom/infrastructure';
+import { AppComponent } from './app.component';
 import { ImportModule } from './modules/import/import.module';
 
 export function initializeApp(com: CommunicationService) {

@@ -15,12 +15,4 @@
   }
 }
 
-@mixin ui-file-upload-typography($theme) {
-  $warn: map-get($theme, warn);
-
-  .ui-file-upload {
-    &-error {
-      color: mat-color($warn, text);
-    }
-  }
-}
+@mixin ui-file-upload-typography($theme) {}

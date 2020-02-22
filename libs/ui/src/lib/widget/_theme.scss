@@ -1,0 +1,11 @@
+@import '../../styles/variables';
+
+@mixin ui-widget-theme($theme) {
+  $warn: map-get($theme, warn);
+
+  .ui-widget-error {
+    color: mat-color($warn, text);
+  }
+}
+
+@mixin ui-widget-typography($theme) {}
