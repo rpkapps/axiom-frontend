@@ -1,13 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { CommunicationService } from '@axiom/infrastructure';
+import { en_US, NZ_I18N, NzButtonModule } from 'ng-zorro-antd';
 import { AppComponent } from './app.component';
 import { ImportModule } from './modules/import/import.module';
 import { WorkspaceComponent } from './workspace/workspace.component';
@@ -22,11 +19,8 @@ export function initializeApp(com: CommunicationService) {
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatButtonModule,
-    MatCardModule,
-    MatProgressBarModule,
-    MatListModule,
     ImportModule,
+    NzButtonModule,
     RouterModule.forRoot([
       {
         path: ':workspaceId',
@@ -38,6 +32,7 @@ export function initializeApp(com: CommunicationService) {
     ], { initialNavigation: 'enabled' })
   ],
   providers: [
+    { provide: NZ_I18N, useValue: en_US },
     { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [CommunicationService], multi: true }
   ],
   bootstrap: [AppComponent]

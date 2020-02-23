@@ -5,7 +5,7 @@ import { AppService } from '../app.service';
 @Component({
   selector: 'lx-workspace',
   templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss'],
+  styleUrls: ['./workspace.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspaceComponent implements OnInit {

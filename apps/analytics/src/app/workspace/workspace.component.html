@@ -1,19 +1,7 @@
 <input
   #fileInput class="ui-file-upload-input" style="display: none" type="file" (change)="appService.upload(fileInput.files[0])">
-<button color="accent" mat-button (click)="fileInput.click()">Upload</button>
+<button nz-button (click)="fileInput.click()">Upload</button>
 
-<button color="accent" mat-button routerLink="import">Import</button>
-
-<mat-card>
-  <mat-list>
-    <ng-container *ngFor="let response of (appService.uploadResponses$ | async)">
-      <mat-list-item>
-        <span mat-line>{{ response.FileName }}</span>
-        <mat-progress-bar mat-line color="accent" [value]="response.Progress"></mat-progress-bar>
-      </mat-list-item>
-    </ng-container>
-  </mat-list>
-
-</mat-card>
+<button nz-button routerLink="import">Import</button>
 
 <router-outlet></router-outlet>

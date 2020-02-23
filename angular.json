@@ -5,10 +5,10 @@
       "projectType": "application",
       "schematics": {
         "@nrwl/angular:component": {
-          "style": "scss"
+          "style": "less"
         },
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "styleext": "less"
         }
       },
       "root": "apps/analytics",
@@ -29,8 +29,8 @@
               "apps/analytics/src/assets"
             ],
             "styles": [
-              "libs/ui/src/styles/core.scss",
-              "apps/analytics/src/styles.scss"
+              "libs/ui/src/styles/core.less",
+              "apps/analytics/src/styles.less"
             ],
             "scripts": []
           },
@@ -167,7 +167,7 @@
       },
       "schematics": {
         "@nrwl/angular:component": {
-          "styleext": "scss"
+          "styleext": "less"
         }
       }
     },
@@ -201,7 +201,7 @@
       },
       "schematics": {
         "@nrwl/angular:component": {
-          "styleext": "scss"
+          "styleext": "less"
         }
       }
     }

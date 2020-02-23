@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatStepperModule } from '@angular/material/stepper';
 import { RouterModule } from '@angular/router';
+import { NzModalModule, NzStepsModule } from 'ng-zorro-antd';
 import { ColumnsComponent } from './columns/columns.component';
 import { FileComponent } from './file/file.component';
 import { ImportComponent } from './import.component';
@@ -12,11 +11,18 @@ import { TagsComponent } from './tags/tags.component';
 
 
 @NgModule({
-  declarations: [ImportComponent],
-  exports: [ImportComponent],
+  declarations: [
+    ImportComponent,
+    FileComponent,
+    SettingsComponent,
+    IndexComponent,
+    ColumnsComponent,
+    TagsComponent,
+  ],
   imports: [
     CommonModule,
-    MatDialogModule,
+    NzModalModule,
+    NzStepsModule,
     RouterModule.forChild([
       {
         path: '',

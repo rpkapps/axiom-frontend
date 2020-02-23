@@ -6,7 +6,7 @@ import { UiWidgetService } from './widget.service';
 @Component({
   selector: 'ui-widget',
   templateUrl: './widget.component.html',
-  styleUrls: ['./widget.component.scss'],
+  styleUrls: ['./widget.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiWidgetComponent implements OnChanges {
