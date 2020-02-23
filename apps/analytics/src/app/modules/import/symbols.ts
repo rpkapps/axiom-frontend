@@ -41,3 +41,13 @@ export interface IFixType {
   FixId: string;
   FixName: string;
 }
+
+export interface IDataType {
+  DataTypeId: string;
+  DataTypeName: string;
+}
+
+export interface ITimeType {
+  TimeTypeId: string;
+  TimeTypeName: string;
+}

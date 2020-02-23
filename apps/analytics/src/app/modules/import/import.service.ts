@@ -4,13 +4,15 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AppService } from '../../app.service';
-import { IAnalysisError, IAnalyzeResponse, IFile, IFilePreview, IImportOptions } from './symbols';
+import { IAnalysisError, IAnalyzeResponse, IDataType, IFile, IFilePreview, IImportOptions, ITimeType } from './symbols';
 
 @Injectable()
 export class ImportService implements OnDestroy {
   options: IImportOptions = {} as IImportOptions;
 
   files$ = new BehaviorSubject<IFile[]>(null);
+  dataTypes$ = new BehaviorSubject<IDataType[]>(null);
+  timeTypes$ = new BehaviorSubject<ITimeType[]>(null);
   filePreview$ = new BehaviorSubject<IFilePreview>(null);
   analyzeResponse$ = new BehaviorSubject<IAnalyzeResponse>(null);
 
@@ -30,6 +32,24 @@ export class ImportService implements OnDestroy {
         FilterValue: this._appService.workspaceId
       })
       .then(files => this.files$.next(files));
+  }
+
+  getDataTypes() {
+    this._com
+      .sendQuery<IDataType[]>({
+        Key: 'List',
+        CollectionKey: 'DataType'
+      })
+      .then(dataTypes => this.dataTypes$.next(dataTypes));
+  }
+
+  getTimeTypes() {
+    this._com
+      .sendQuery<ITimeType[]>({
+        Key: 'List',
+        CollectionKey: 'TimeType'
+      })
+      .then(timeTypes => this.timeTypes$.next(timeTypes));
   }
 
   previewFile() {
