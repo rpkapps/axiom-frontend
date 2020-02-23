@@ -1,6 +1,7 @@
 export interface IFile {
   FileId: string;
   FileName: string;
+  WorkspaceId: string;
 }
 
 export interface IFilePreview {
@@ -24,9 +25,19 @@ export interface IAnalyzeResponse {
 }
 
 export interface IAnalysisError {
-  ErrorId: string;
+  Error: IErrorType;
   Count: number;
-  FixIds: string[];
+  Fixes: IFixType[];
   Column: number;
   Examples: string[][][];
+}
+
+export interface IErrorType {
+  ErrorId: string;
+  ErrorName: string;
+}
+
+export interface IFixType {
+  FixId: string;
+  FixName: string;
 }

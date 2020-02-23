@@ -3,6 +3,7 @@ import { CommunicationService, IStatus } from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { AppService } from '../../app.service';
 import { IAnalysisError, IAnalyzeResponse, IFile, IFilePreview, IImportOptions } from './symbols';
 
 @Injectable()
@@ -13,7 +14,10 @@ export class ImportService implements OnDestroy {
   filePreview$ = new BehaviorSubject<IFilePreview>(null);
   analyzeResponse$ = new BehaviorSubject<IAnalyzeResponse>(null);
 
-  constructor(private _com: CommunicationService) {
+  constructor(
+    private _com: CommunicationService,
+    private _appService: AppService
+  ) {
     this.subscribeToAnalyze();
   }
 
@@ -21,7 +25,9 @@ export class ImportService implements OnDestroy {
     this._com
       .sendQuery<IFile[]>({
         Key: 'List',
-        ListKey: 'File'
+        CollectionKey: 'File',
+        FilterKey: 'WorkspaceId',
+        FilterValue: this._appService.workspaceId
       })
       .then(files => this.files$.next(files));
   }
@@ -44,6 +50,7 @@ export class ImportService implements OnDestroy {
     this._com
       .sendCommand({
         Key: 'AnalyzeFile',
+        WorkspaceId: this._appService.workspaceId,
         FileId: this.options.FileId,
         IndexColumn: this.options.IndexColumn,
         DataColumns: this.options.DataColumns,

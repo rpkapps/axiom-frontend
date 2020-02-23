@@ -60,19 +60,19 @@ export class CommunicationService {
       throttleTime(250, asyncScheduler, { trailing: true }),
       map((event: any) => {
         if (event.type === HttpEventType.UploadProgress) {
-          response.Status = 'uploading';
+          response.Status = 'Uploading';
           response.BytesLoaded = event.loaded;
           response.Progress = Math.floor(event.loaded * 100 / event.total);
         } else {
           response.FileId = event.body.FileId;
-          response.Status = 'done';
+          response.Status = 'Done';
           response.BytesLoaded = file.size;
           response.Progress = 100;
         }
         return response;
       }),
       catchError((error: HttpErrorResponse) => {
-        response.Status = 'error';
+        response.Status = 'Error';
         response.StatusText = error.statusText;
         return of(response);
       })
