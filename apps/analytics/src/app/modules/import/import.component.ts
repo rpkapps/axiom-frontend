@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog/dialog-ref';
 import { ImportService } from './import.service';
 
 @Component({
@@ -8,8 +10,22 @@ import { ImportService } from './import.service';
   providers: [ImportService]
 })
 export class ImportComponent implements OnInit {
-  constructor(public importService: ImportService) { }
+  @ViewChild('dialogTemplate', { static: true, read: TemplateRef }) dialogTemplate: TemplateRef<any>;
+  private _dialogRef: MatDialogRef<any>;
 
-  ngOnInit(): void {
+  constructor(
+    public importService: ImportService,
+    private _dialog: MatDialog
+  ) { }
+
+  ngOnInit() {
+    this.openDialog();
+  }
+
+  openDialog() {
+    this._dialogRef = this._dialog.open(this.dialogTemplate, {
+      width: '1000px',
+      disableClose: true
+    });
   }
 }

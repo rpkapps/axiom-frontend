@@ -32,13 +32,14 @@ export class CommunicationService {
     return this._http.post<T>(`${ this.config.ApiUrl }/query`, query).toPromise();
   }
 
-  upload(file: File) {
+  upload(workspaceId: string, file: File) {
     const formData = new FormData();
     formData.set('File', file);
+    formData.set('WorkspaceId', workspaceId);
 
     const response = <IUploadResponse> {
       FileId: null,
-      Name: file.name,
+      FileName: file.name,
       Size: file.size,
       Type: file.type,
       Progress: 0,

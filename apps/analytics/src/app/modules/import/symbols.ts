@@ -9,11 +9,12 @@ export interface IFilePreview {
 }
 
 export interface IImportOptions {
-  FileId: string;
-  IndexColumn: number;
-  DataColumns: number[];
-  Transposed: boolean;
-  DataTypeId: string;
+  FileId?: string;
+  IndexColumn?: number;
+  DataColumns?: number[];
+  DataTypeId?: string;
+  TimeTypeId?: string;
+  EmptyValue?: string;
 }
 
 export interface IAnalyzeResponse {

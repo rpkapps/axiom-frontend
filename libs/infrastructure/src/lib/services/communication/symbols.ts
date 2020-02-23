@@ -9,13 +9,13 @@ export interface INotification {
   [key: string]: any;
 }
 
-export interface IStatus extends INotification, ICommand {
+export interface IStatus extends INotification {
   LastModified: string;
   State: 'InProgress' | 'Completed' | 'Failed';
   Status: any;
   Progress: number;
-  CommandKey: string;
   ResultQuery: any;
+  Command: ICommand;
 }
 
 export interface ICommand {
@@ -33,11 +33,11 @@ export interface IQuery {
 
 export interface IUploadResponse {
   FileId: string;
-  Name: string;
+  FileName: string;
   Size: number;
   Type: string;
   Progress: number;
   BytesLoaded: number;
-  Status: 'uploading' | 'done' | 'error';
+  Status: 'Uploading' | 'Done' | 'Error';
   StatusText: string;
 }

@@ -47,8 +47,9 @@ export class ImportService implements OnDestroy {
         FileId: this.options.FileId,
         IndexColumn: this.options.IndexColumn,
         DataColumns: this.options.DataColumns,
-        Transposed: this.options.Transposed,
-        DataTypeId: this.options.DataTypeId
+        DataTypeId: this.options.DataTypeId,
+        TimeTypeId: this.options.TimeTypeId,
+        EmptyValue: this.options.EmptyValue,
       })
       .catch(() => {
         this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
@@ -62,8 +63,8 @@ export class ImportService implements OnDestroy {
       .pipe(
         filter(s =>
           s.Key === 'Status'
-          && s.CommandKey === 'AnalyzeFile'
-          && s.FileId === this.options.FileId
+          && s.Command.Key === 'AnalyzeFile'
+          && s.Command.FileId === this.options.FileId
         ),
         untilDestroyed(this)
       )
