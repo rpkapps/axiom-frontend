@@ -3,7 +3,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { asyncScheduler, of, Subject } from 'rxjs';
 import { catchError, filter, map, throttleTime } from 'rxjs/operators';
-import { ICommand, IConfig, INotification, IQuery, IUploadResponse } from './symbols';
+import { ICommand, IConfig, INotification, IQuery, IFile } from './symbols';
 
 @Injectable({
   providedIn: 'root'
@@ -37,14 +37,11 @@ export class CommunicationService {
     formData.set('File', file);
     formData.set('WorkspaceId', workspaceId);
 
-    const response = <IUploadResponse> {
+    const response = <IFile> {
       FileId: null,
       FileName: file.name,
-      Size: file.size,
-      Type: file.type,
       Progress: 0,
-      BytesLoaded: 0,
-      StatusText: ''
+      Status: 'Uploading'
     };
 
     return this._http.post(`${ this.config.ApiUrl }/upload`, formData, {
@@ -61,19 +58,16 @@ export class CommunicationService {
       map((event: any) => {
         if (event.type === HttpEventType.UploadProgress) {
           response.Status = 'Uploading';
-          response.BytesLoaded = event.loaded;
           response.Progress = Math.floor(event.loaded * 100 / event.total);
         } else {
           response.FileId = event.body.FileId;
           response.Status = 'Done';
-          response.BytesLoaded = file.size;
           response.Progress = 100;
         }
         return response;
       }),
       catchError((error: HttpErrorResponse) => {
         response.Status = 'Error';
-        response.StatusText = error.statusText;
         return of(response);
       })
     );
@@ -102,6 +96,7 @@ export class CommunicationService {
 
       connection.onclose(() => reconnect());
       connection.on('Notify', data => {
+        console.log('Notify', JSON.parse(JSON.stringify(data)));
         this._ngZone.run(() => this._notification$.next(data));
       });
 

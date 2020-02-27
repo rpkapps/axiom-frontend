@@ -1,9 +1,3 @@
-export interface IFile {
-  FileId: string;
-  FileName: string;
-  WorkspaceId: string;
-}
-
 export interface IFilePreview {
   Error?: string;
   Preview?: string[][];
@@ -16,6 +10,17 @@ export interface IImportOptions {
   DataTypeId?: string;
   TimeTypeId?: string;
   EmptyValue?: string;
+  FixIds?: string[];
+  IgnoredRows?: number[];
+  IgnoredColumns?: number[];
+  Overrides?: ICellValue[];
+  ColumnTags?: { [Column: number]: string[] };
+}
+
+export interface ICellValue {
+  Row: number;
+  Column: number;
+  Value: string;
 }
 
 export interface IAnalyzeResponse {
@@ -29,7 +34,8 @@ export interface IAnalysisError {
   Count: number;
   Fixes: IFixType[];
   Column: number;
-  Examples: string[][][];
+  ColumnNames: string[];
+  Examples: IErrorExample[];
 }
 
 export interface IErrorType {
@@ -50,4 +56,15 @@ export interface IDataType {
 export interface ITimeType {
   TimeTypeId: string;
   TimeTypeName: string;
+}
+
+export interface IErrorExample {
+  Row: number;
+  Data: string[][];
+}
+
+export interface ITagGroup {
+  TagGroupId: string;
+  TagGroupName: string;
+  Tags: string[];
 }

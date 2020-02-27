@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { CommunicationService, IUploadResponse } from '@axiom/infrastructure';
+import { CommunicationService, IFile, IStatus } from '@axiom/infrastructure';
 import { BehaviorSubject } from 'rxjs';
-import { IFile } from './modules/import/symbols';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,19 +9,46 @@ import { IFile } from './modules/import/symbols';
 export class AppService {
   workspaceId: string;
 
-  uploadResponses$ = new BehaviorSubject<IUploadResponse[]>([]);
+  uploads$ = new BehaviorSubject<IFile[]>([]);
+  imports$ = new BehaviorSubject<IStatus[]>([]);
 
-  constructor(private _com: CommunicationService) { }
+  constructor(private _comService: CommunicationService) {
+    this.subscribeToImports();
+  }
 
   upload(file: File) {
-    this._com.upload(this.workspaceId, file).subscribe(response => {
-      const responses = this.uploadResponses$.getValue();
+    this._comService
+      .upload(this.workspaceId, file)
+      .subscribe(upload => {
+        const uploads = this.uploads$.getValue();
 
-      if (!responses.find(r => r.FileName === response.FileName)) {
-        responses.push(response);
-      }
+        if (!uploads.find(r => r.FileName === upload.FileName)) {
+          uploads.push(upload);
+        }
 
-      this.uploadResponses$.next([...responses]);
-    });
+        this.uploads$.next([...uploads]);
+      });
+  }
+
+  private subscribeToImports() {
+    this._comService.notification$
+      .pipe(
+        filter(s =>
+          s.Key === 'Status'
+          && s.Command.Key === 'ImportFile'
+        )
+      )
+      .subscribe((status: IStatus) => {
+        const imports: IStatus[] = this.imports$.getValue();
+        const index = imports.findIndex(x => x.Command.TransactionId === status.Command.TransactionId);
+
+        if (index !== -1) {
+          imports[index] = status;
+        } else {
+          imports.push(status);
+        }
+
+        this.imports$.next([...imports]);
+      });
   }
 }

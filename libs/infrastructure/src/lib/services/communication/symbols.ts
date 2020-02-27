@@ -31,13 +31,10 @@ export interface IQuery {
   [key: string]: any;
 }
 
-export interface IUploadResponse {
+export interface IFile {
   FileId: string;
   FileName: string;
-  Size: number;
-  Type: string;
+  WorkspaceId: string;
   Progress: number;
-  BytesLoaded: number;
   Status: 'Uploading' | 'Done' | 'Error';
-  StatusText: string;
 }
