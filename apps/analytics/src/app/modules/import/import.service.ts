@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { CommunicationService, IFile, IStatus } from '@axiom/infrastructure';
+import { ApiService, IFile, IStatus, NotificationService } from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -22,19 +22,20 @@ export class ImportService implements OnDestroy {
   private _files$ = new BehaviorSubject<IFile[]>(null);
 
   constructor(
-    private _comService: CommunicationService,
+    private _apiService: ApiService,
+    private _notificationService: NotificationService,
     private _appService: AppService
   ) {
     this.subscribeToAnalyze();
 
     this.files$ = merge(
       this._files$,
-      this._appService.uploads$,
+      this._appService.uploads$
     );
   }
 
   getFiles() {
-    this._comService
+    this._apiService
       .sendQuery<IFile[]>({
         Key: 'List',
         CollectionKey: 'File',
@@ -42,51 +43,51 @@ export class ImportService implements OnDestroy {
         FilterValue: this._appService.workspaceId
       })
       .then(files => {
-        this._files$.next(files)
+        this._files$.next(files);
       });
   }
 
   getDataTypes() {
-    this._comService
+    this._apiService
       .sendQuery<IDataType[]>({
         Key: 'List',
         CollectionKey: 'DataType'
       })
       .then(dataTypes => {
-        this.dataTypes$.next(dataTypes)
+        this.dataTypes$.next(dataTypes);
       });
   }
 
   getTimeTypes() {
-    this._comService
+    this._apiService
       .sendQuery<ITimeType[]>({
         Key: 'List',
         CollectionKey: 'TimeType'
       })
       .then(timeTypes => {
-        this.timeTypes$.next(timeTypes)
+        this.timeTypes$.next(timeTypes);
       });
   }
 
   previewFile() {
-    this._comService
+    this._apiService
       .sendQuery<string[][]>({
         Key: 'PreviewFile',
         FileId: this.options.FileId
       })
       .then(preview => {
-        this.filePreview$.next({ Preview: preview })
+        this.filePreview$.next({ Preview: preview });
       })
       .catch(() => {
-        this.filePreview$.next({ Error: 'Failed to preview file.' })
+        this.filePreview$.next({ Error: 'Failed to preview file.' });
       });
   }
 
   analyzeFile() {
-    this._comService
+    this._apiService
       .sendCommand({
         ...this.options,
-        Key: 'AnalyzeFile',
+        Key: 'AnalyzeFile'
       })
       .catch(() => {
         this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
@@ -94,7 +95,7 @@ export class ImportService implements OnDestroy {
   }
 
   getTagGroup() {
-    this._comService
+    this._apiService
       .sendQuery<ITagGroup>({
         Key: 'Object',
         CollectionKey: 'TagGroup',
@@ -102,12 +103,12 @@ export class ImportService implements OnDestroy {
         IdValue: this.options.DataTypeId
       })
       .then(tagGroup => {
-        this.tagGroup$.next(tagGroup)
+        this.tagGroup$.next(tagGroup);
       });
   }
 
   importFile() {
-    this._comService
+    this._apiService
       .sendCommand({
         ...this.options,
         Key: 'ImportFile'
@@ -120,7 +121,7 @@ export class ImportService implements OnDestroy {
   ngOnDestroy() {}
 
   private subscribeToAnalyze() {
-    this._comService.notification$
+    this._notificationService.$
       .pipe(
         filter(s =>
           s.Key === 'Status'
@@ -135,7 +136,7 @@ export class ImportService implements OnDestroy {
             this.analyzeResponse$.next({ Progress: status.Progress });
             break;
           case 'Completed':
-            this._comService
+            this._apiService
               .sendQuery<IAnalysisError[]>(status.ResultQuery)
               .then(analysis => {
                 this.analyzeResponse$.next({ Analysis: analysis });

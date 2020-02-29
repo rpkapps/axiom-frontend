@@ -3,14 +3,14 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { CommunicationService } from '@axiom/infrastructure';
+import { InitializerService } from '@axiom/infrastructure';
 import { en_US, NZ_I18N, NzButtonModule } from 'ng-zorro-antd';
 import { AppComponent } from './app.component';
 import { ImportModule } from './modules/import/import.module';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
-export function initializeApp(com: CommunicationService) {
-  return () => com.init();
+export function appInitializerFactory(initializer: InitializerService) {
+  return () => initializer.initialize();
 }
 
 @NgModule({
@@ -33,7 +33,7 @@ export function initializeApp(com: CommunicationService) {
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
-    { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [CommunicationService], multi: true }
+    { provide: APP_INITIALIZER, useFactory: appInitializerFactory, deps: [InitializerService], multi: true }
   ],
   bootstrap: [AppComponent]
 })

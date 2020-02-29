@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommunicationService, IFile, IStatus } from '@axiom/infrastructure';
+import { ApiService, IFile, IStatus, NotificationService } from '@axiom/infrastructure';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -12,12 +12,15 @@ export class AppService {
   uploads$ = new BehaviorSubject<IFile[]>([]);
   imports$ = new BehaviorSubject<IStatus[]>([]);
 
-  constructor(private _comService: CommunicationService) {
+  constructor(
+    private _apiService: ApiService,
+    private _notificationService: NotificationService
+  ) {
     this.subscribeToImports();
   }
 
   upload(file: File) {
-    this._comService
+    this._apiService
       .upload(this.workspaceId, file)
       .subscribe(upload => {
         const uploads = this.uploads$.getValue();
@@ -31,7 +34,7 @@ export class AppService {
   }
 
   private subscribeToImports() {
-    this._comService.notification$
+    this._notificationService.$
       .pipe(
         filter(s =>
           s.Key === 'Status'
