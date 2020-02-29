@@ -1,9 +1,11 @@
-import { HttpClient, HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { HubConnectionBuilder } from '@aspnet/signalr';
+import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
 import { asyncScheduler, of, Subject } from 'rxjs';
-import { catchError, filter, map, throttleTime } from 'rxjs/operators';
-import { ICommand, IConfig, INotification, IQuery, IFile } from './symbols';
+import { catchError, filter, map, tap, throttleTime } from 'rxjs/operators';
+import { HttpMessagePackService } from './http-message-pack.service';
+import { ICommand, IConfig, IFile, INotification, IQuery } from './symbols';
 
 @Injectable({
   providedIn: 'root'
@@ -17,19 +19,30 @@ export class CommunicationService {
 
   constructor(
     private _http: HttpClient,
+    private _httpMessagePack: HttpMessagePackService,
     private _ngZone: NgZone
-  ) { }
+  ) {}
 
   init() {
-    return this.loadConfig().then(() => this.startHubConnection());
+    return this.loadConfig()
+      .then(() => {
+        this.startHubConnection();
+        return true;
+      });
   }
 
   sendCommand(command: ICommand) {
-    return this._http.post<ICommand>(`${ this.config.ApiUrl }/command`, command).toPromise();
+    return this._httpMessagePack
+      .post<ICommand>(`${ this.config.ApiUrl }/command`, command)
+      .pipe(tap(p => console.log(p)))
+      .toPromise();
   }
 
   sendQuery<T>(query: IQuery) {
-    return this._http.post<T>(`${ this.config.ApiUrl }/query`, query).toPromise();
+    return this._httpMessagePack
+      .post<T>(`${ this.config.ApiUrl }/query`, query)
+      .pipe(tap(p => console.log(p)))
+      .toPromise();
   }
 
   upload(workspaceId: string, file: File) {
@@ -44,33 +57,35 @@ export class CommunicationService {
       Status: 'Uploading'
     };
 
-    return this._http.post(`${ this.config.ApiUrl }/upload`, formData, {
-      observe: 'events',
-      reportProgress: true,
-      responseType: 'json'
-    }).pipe(
-      filter(event =>
-        event.type === HttpEventType.UploadProgress ||
-        event.type === HttpEventType.Response
-      ),
-      // Throttle to prevent choppy progress animations
-      throttleTime(250, asyncScheduler, { trailing: true }),
-      map((event: any) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          response.Status = 'Uploading';
-          response.Progress = Math.floor(event.loaded * 100 / event.total);
-        } else {
-          response.FileId = event.body.FileId;
-          response.Status = 'Done';
-          response.Progress = 100;
-        }
-        return response;
-      }),
-      catchError((error: HttpErrorResponse) => {
-        response.Status = 'Error';
-        return of(response);
+    return this._httpMessagePack
+      .post(`${ this.config.ApiUrl }/upload`, formData, {
+        observe: 'events',
+        reportProgress: true
       })
-    );
+      .pipe(
+        filter(event =>
+          event.type === HttpEventType.UploadProgress ||
+          event.type === HttpEventType.Response
+        ),
+        // Throttle to prevent choppy progress animations
+        throttleTime(250, asyncScheduler, { trailing: true }),
+        map((event: any) => {
+          console.log(event);
+          if (event.type === HttpEventType.UploadProgress) {
+            response.Status = 'Uploading';
+            response.Progress = Math.floor(event.loaded * 100 / event.total);
+          } else {
+            response.FileId = event.body.FileId;
+            response.Status = 'Done';
+            response.Progress = 100;
+          }
+          return response;
+        }),
+        catchError(() => {
+          response.Status = 'Error';
+          return of(response);
+        })
+      );
   }
 
   private loadConfig() {
@@ -83,6 +98,7 @@ export class CommunicationService {
     return this._ngZone.runOutsideAngular(() => {
       const connection = new HubConnectionBuilder()
         .withUrl(this.config.SignalRUrl)
+        .withHubProtocol(new MessagePackHubProtocol())
         .build();
 
       const reconnect = () => {
@@ -90,7 +106,7 @@ export class CommunicationService {
           connection
             .start()
             .then(() => clearInterval(handle))
-            .catch(e => {});
+            .catch(() => {});
         }, this._retryTime);
       };
 
