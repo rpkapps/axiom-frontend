@@ -26,7 +26,7 @@ export class ImportService implements OnDestroy {
     private _notificationService: NotificationService,
     private _appService: AppService
   ) {
-    this.subscribeToAnalyze();
+    this._subscribeToAnalyze();
 
     this.files$ = merge(
       this._files$,
@@ -120,7 +120,7 @@ export class ImportService implements OnDestroy {
 
   ngOnDestroy() {}
 
-  private subscribeToAnalyze() {
+  private _subscribeToAnalyze() {
     this._notificationService.$
       .pipe(
         filter(s =>

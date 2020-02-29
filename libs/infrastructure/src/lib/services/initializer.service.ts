@@ -13,13 +13,13 @@ export class InitializerService {
   ) {}
 
   initialize() {
-    return this.loadConfig().then(() => {
+    return this._loadConfig().then(() => {
       this._notificationService.startHubConnection();
       return true;
     });
   }
 
-  private loadConfig() {
+  private _loadConfig() {
     return this._http.get<IConfig>('/assets/config.json')
       .toPromise()
       .then(c => Object.assign(config, c));

@@ -16,7 +16,7 @@ export class AppService {
     private _apiService: ApiService,
     private _notificationService: NotificationService
   ) {
-    this.subscribeToImports();
+    this._subscribeToImports();
   }
 
   upload(file: File) {
@@ -33,7 +33,7 @@ export class AppService {
       });
   }
 
-  private subscribeToImports() {
+  private _subscribeToImports() {
     this._notificationService.$
       .pipe(
         filter(s =>

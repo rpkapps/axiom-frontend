@@ -15,11 +15,11 @@ export class ApiService {
   constructor(private _http: HttpClient) {}
 
   sendCommand(command: ICommand) {
-    return this.post<ICommand>(`${ config.ApiUrl }/command`, command).toPromise();
+    return this._post<ICommand>(`${ config.ApiUrl }/command`, command).toPromise();
   }
 
   sendQuery<T>(query: IQuery) {
-    return this.post<T>(`${ config.ApiUrl }/query`, query).toPromise();
+    return this._post<T>(`${ config.ApiUrl }/query`, query).toPromise();
   }
 
   upload(workspaceId: string, file: File) {
@@ -65,7 +65,7 @@ export class ApiService {
       );
   }
 
-  private post<T>(url: string, body: any) {
+  private _post<T>(url: string, body: any) {
     const buffer = encode(body).buffer as ArrayBufferLike;
 
     return this._http.post(url, buffer, { responseType: 'arraybuffer' })
