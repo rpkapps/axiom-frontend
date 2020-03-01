@@ -24,9 +24,19 @@
             "polyfills": "apps/analytics/src/polyfills.ts",
             "tsConfig": "apps/analytics/tsconfig.app.json",
             "aot": true,
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "libs/ui/src/styles"
+              ]
+            },
             "assets": [
               "apps/analytics/src/favicon.ico",
-              "apps/analytics/src/assets"
+              "apps/analytics/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "libs/ui/src/styles/core.less",

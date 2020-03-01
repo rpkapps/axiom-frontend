@@ -32,6 +32,10 @@ export class ImportService implements OnDestroy {
       this._files$,
       this._appService.uploads$
     );
+
+    this.getFiles();
+    this.getDataTypes();
+    this.getTimeTypes();
   }
 
   getFiles() {
@@ -43,7 +47,9 @@ export class ImportService implements OnDestroy {
         FilterValue: this._appService.workspaceId
       })
       .then(files => {
-        this._files$.next(files);
+        const fruits = ['Açaí', 'Akee', 'Apple', 'Apricot', 'Avocado', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Black sapote', 'Blueberry', 'Boysenberry', 'Cactus pear', 'Crab apple', 'Currant', 'Cherry', 'Chico fruit', 'Cloudberry', 'Coconut', 'Cranberry', 'Damson', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Goji berry', 'Gooseberry', 'Grape', 'Raisin', 'Grapefruit', 'Guava',];
+        const fruitFiles = fruits.map(fruit => <IFile> { FileName: fruit + '.csv', FileId: fruit, WorkspaceId: 'workspace' });
+        this._files$.next([...files, ...fruitFiles]);
       });
   }
 

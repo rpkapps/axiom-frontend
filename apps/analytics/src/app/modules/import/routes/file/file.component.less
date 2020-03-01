@@ -1,0 +1,53 @@
+@import 'variables';
+
+@file-selected-color: @primary-color;
+@file-hover-color: @radio-button-hover-color;
+@file-border-radius: @border-radius-base;
+
+.file {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 125px;
+  height: 125px;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: @file-border-radius;
+
+  &-inner {
+    margin-bottom: 18px;
+  }
+
+  &-selected {
+    border-color: @file-selected-color;
+    color: @file-selected-color;
+  }
+
+  &:hover {
+    color: @file-hover-color;
+  }
+
+  &-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &-icon {
+    display: block;
+    font-size: 20px;
+  }
+
+  &-name {
+    width: 100%;
+  }
+
+  input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+}

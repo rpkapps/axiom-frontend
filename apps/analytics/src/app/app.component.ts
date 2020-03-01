@@ -1,9 +1,10 @@
-import { Component, DoCheck } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DoCheck } from '@angular/core';
 
 @Component({
   selector: 'lx-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less']
+  styleUrls: ['./app.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements DoCheck {
   ngDoCheck() {

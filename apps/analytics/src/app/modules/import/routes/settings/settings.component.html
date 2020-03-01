@@ -1,0 +1,53 @@
+<lx-steps [step]="0"></lx-steps>
+
+<form #form #ngForm="ngForm" class="settings-form" nz-form nzLayout="vertical" (ngSubmit)="onFormSubmit()">
+  <nz-form-item>
+    <nz-form-label>Select a data type</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        name="DataTypeId"
+        nzAllowClear
+        nzPlaceHolder="Required"
+        nzShowSearch
+        nzSize="small"
+        required
+        [(ngModel)]="importService.options.DataTypeId">
+        <nz-option
+          *ngFor="let dataType of importService.dataTypes$ | async"
+          [nzLabel]="dataType.DataTypeName"
+          [nzValue]="dataType.DataTypeId"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Select a Date/Time decoder</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        name="TimeTypeId"
+        nzAllowClear
+        nzPlaceHolder="Required"
+        nzShowSearch
+        nzSize="small"
+        required
+        [(ngModel)]="importService.options.TimeTypeId">
+        <nz-option
+          *ngFor="let timeType of importService.timeTypes$ | async"
+          [nzLabel]="timeType.TimeTypeName"
+          [nzValue]="timeType.TimeTypeId"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label>Set an empty value</nz-form-label>
+    <nz-form-control>
+      <input
+        name="EmptyValue"
+        nz-input
+        nzSize="small"
+        placeholder="Optional"
+        [(ngModel)]="importService.options.EmptyValue" />
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<button nz-button nzType="link" [disabled]="ngForm.invalid" (click)="onFormSubmit()">Next</button>
