@@ -1,1 +1,9 @@
-<lx-steps [step]="3"></lx-steps>
+<lx-steps
+  nextText="Import File"
+  showBack
+  showNext
+  [step]="3"
+  (back)="onBackClick()"
+  (next)="importService.importFile()">
+
+</lx-steps>

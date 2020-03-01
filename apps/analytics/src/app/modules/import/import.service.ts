@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ApiService, IFile, IStatus, NotificationService } from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { AppService } from '../../app.service';
 import {
   IAnalysisError, IAnalyzeResponse, IDataType, IFilePreview, IImportOptions, ITagGroup, ITimeType
@@ -19,7 +19,7 @@ export class ImportService implements OnDestroy {
   analyzeResponse$ = new BehaviorSubject<IAnalyzeResponse>(null);
   tagGroup$ = new BehaviorSubject<ITagGroup>(null);
 
-  private _files$ = new BehaviorSubject<IFile[]>(null);
+  private _files$ = new BehaviorSubject<IFile[]>([]);
 
   constructor(
     private _apiService: ApiService,
@@ -28,10 +28,13 @@ export class ImportService implements OnDestroy {
   ) {
     this._subscribeToAnalyze();
 
-    this.files$ = merge(
-      this._files$,
-      this._appService.uploads$
-    );
+    this.files$ = combineLatest([this._files$, this._appService.uploads$])
+      .pipe(
+        map(([a, b]) => {
+          console.log(a, b);
+          return [...a, ...b];
+        })
+      );
 
     this.getFiles();
     this.getDataTypes();
@@ -47,8 +50,12 @@ export class ImportService implements OnDestroy {
         FilterValue: this._appService.workspaceId
       })
       .then(files => {
-        const fruits = ['Açaí', 'Akee', 'Apple', 'Apricot', 'Avocado', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Black sapote', 'Blueberry', 'Boysenberry', 'Cactus pear', 'Crab apple', 'Currant', 'Cherry', 'Chico fruit', 'Cloudberry', 'Coconut', 'Cranberry', 'Damson', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Goji berry', 'Gooseberry', 'Grape', 'Raisin', 'Grapefruit', 'Guava',];
-        const fruitFiles = fruits.map(fruit => <IFile> { FileName: fruit + '.csv', FileId: fruit, WorkspaceId: 'workspace' });
+        const fruits = ['Açaí', 'Akee', 'Apple', 'Apricot', 'Avocado', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Black sapote', 'Blueberry', 'Boysenberry', 'Cactus pear', 'Crab apple', 'Currant', 'Cherry', 'Chico fruit', 'Cloudberry', 'Coconut', 'Cranberry', 'Damson', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Goji berry', 'Gooseberry', 'Grape', 'Raisin', 'Grapefruit', 'Guava'];
+        const fruitFiles = fruits.map(fruit => <IFile> {
+          FileName: fruit + '.csv',
+          FileId: fruit,
+          WorkspaceId: 'workspace'
+        });
         this._files$.next([...files, ...fruitFiles]);
       });
   }

@@ -1,4 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ImportService } from '../../import.service';
 
 @Component({
   selector: 'lx-columns',
@@ -6,11 +8,21 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./columns.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ColumnsComponent implements OnInit {
+export class ColumnsComponent {
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(
+    public importService: ImportService,
+    private _router: Router,
+    private _route: ActivatedRoute
+  ) {
+    this.importService.previewFile();
   }
 
+  onBackClick() {
+    this._router.navigate(['../index'], { relativeTo: this._route });
+  }
+
+  onNextClick() {
+    this._router.navigate(['../tags'], { relativeTo: this._route });
+  }
 }

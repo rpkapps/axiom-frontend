@@ -1,4 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ImportService } from '../../import.service';
 
 @Component({
   selector: 'lx-tags',
@@ -6,11 +8,15 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./tags.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagsComponent implements OnInit {
+export class TagsComponent {
 
-  constructor() { }
+  constructor(
+    public importService: ImportService,
+    private _router: Router,
+    private _route: ActivatedRoute
+  ) { }
 
-  ngOnInit(): void {
+  onBackClick() {
+    this._router.navigate(['../columns'], { relativeTo: this._route });
   }
-
 }

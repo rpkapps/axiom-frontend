@@ -1,1 +1,3 @@
-<lx-steps [step]="2"></lx-steps>
+<lx-steps [step]="2" showBack showNext (next)="onNextClick()" (back)="onBackClick()">
+  {{ importService.filePreview$ | async | json }}
+</lx-steps>

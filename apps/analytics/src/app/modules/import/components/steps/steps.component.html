@@ -1,6 +1,19 @@
-<nz-steps [nzCurrent]="step" nzSize="small">
+<button class="step-back-button" nz-button nzSize="small" nzType="link" [disabled]="backDisabled" (click)="back.next()">
+  <i nz-icon nzTheme="outline" nzType="left"></i>Back
+</button>
+
+<nz-steps class="steps" nzSize="small" [nzCurrent]="step">
   <nz-step nzTitle="Choose Settings"></nz-step>
   <nz-step nzTitle="Select Index"></nz-step>
   <nz-step nzTitle="Select Columns"></nz-step>
   <nz-step nzTitle="Tag Columns"></nz-step>
 </nz-steps>
+
+<div class="step-content">
+  <ng-content></ng-content>
+</div>
+
+<button
+  class="step-next-button" nz-button nzSize="small" nzType="primary" [disabled]="nextDisabled" (click)="next.next()">
+  {{ nextText }}<i nz-icon nzTheme="outline" nzType="right"></i>
+</button>

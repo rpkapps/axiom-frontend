@@ -1,13 +1,16 @@
 <h2 class="u-text-center" nz-title>Select a file to import</h2>
 
 <div *ngIf="importService.files$ | async as files" class="file-list">
-  <label *ngFor="let file of files" class="file" [class.file-selected]="file.FileId === importService.options.FileId">
+  <button
+    *ngFor="let file of files; trackBy: trackByFileId"
+    class="file"
+    [class.file-selected]="file.FileId === importService.options.FileId"
+    (click)="onFileClick(file)">
     <div class="file-inner">
-      <input name="file" type="radio" (change)="onFileChange(file)">
       <i class="file-icon" nz-icon nzTheme="outline" nzType="file-text"></i>
       <span class="file-name">{{ file.FileName }}</span>
     </div>
-  </label>
+  </button>
 </div>
 
 <div class="u-text-center">

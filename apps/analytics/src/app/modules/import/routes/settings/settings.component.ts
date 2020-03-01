@@ -16,6 +16,10 @@ export class SettingsComponent {
     private _route: ActivatedRoute,
   ) { }
 
+  onBackClick() {
+    this._router.navigate(['../file'], { relativeTo: this._route });
+  }
+
   onFormSubmit() {
     this._router.navigate(['../index'], { relativeTo: this._route });
     return false;

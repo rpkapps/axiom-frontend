@@ -17,7 +17,11 @@ export class FileComponent {
     private _route: ActivatedRoute,
   ) { }
 
-  onFileChange(file: IFile) {
+  trackByFileId(index: number, file: IFile) {
+    return file.FileId;
+  }
+
+  onFileClick(file: IFile) {
     this.importService.options.FileId = file.FileId;
     this._router.navigate(['../settings'], { relativeTo: this._route });
   }

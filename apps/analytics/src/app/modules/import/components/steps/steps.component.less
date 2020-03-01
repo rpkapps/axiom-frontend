@@ -1,4 +1,25 @@
 :host {
   display: block;
-  margin-bottom: 80px;
+  max-width: 100%;
+}
+
+.step {
+  &-back-button {
+    padding: 0;
+
+    + .steps {
+      margin-top: 32px;
+    }
+  }
+
+  &-next-button {
+    display: block;
+    margin-left: auto;
+  }
+}
+
+.steps {
+  display: block;
+  width: 90%;
+  margin: 0 auto 80px auto;
 }
