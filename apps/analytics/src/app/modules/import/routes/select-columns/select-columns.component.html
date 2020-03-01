@@ -2,6 +2,8 @@
   <ng-container *ngIf="importService.filePreview$ | async as filePreview">
     <nz-alert *ngIf="filePreview.Error; else previewTemplate" nzType="error" [nzMessage]="filePreview.Error"></nz-alert>
     <ng-template #previewTemplate>
+      <h2 class="u-text-center" nz-title>Selected data columns to import</h2>
+      <p class="u-text-center" nz-paragraph>Columns not selected will be excluded from analysis.</p>
       <lx-columns
         [(selected)]="importService.options.DataColumns"
         [columns]="filePreview.Preview"

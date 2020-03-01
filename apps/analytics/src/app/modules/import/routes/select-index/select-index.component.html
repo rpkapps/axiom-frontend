@@ -2,6 +2,8 @@
   <ng-container *ngIf="importService.filePreview$ | async as filePreview">
     <nz-alert *ngIf="filePreview.Error; else previewTemplate" nzType="error" [nzMessage]="filePreview.Error"></nz-alert>
     <ng-template #previewTemplate>
+      <h2 class="u-text-center" nz-title>Selected index columns</h2>
+      <p class="u-text-center" nz-paragraph>These columns will be used for ordering all data in the table.</p>
       <lx-columns
         [(selected)]="importService.options.IndexColumns"
         [columns]="filePreview.Preview"
