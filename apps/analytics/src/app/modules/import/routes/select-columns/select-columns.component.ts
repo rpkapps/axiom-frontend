@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ImportService } from '../../import.service';
 
 @Component({
-  selector: 'lx-index',
-  templateUrl: './index.component.html',
-  styleUrls: ['./index.component.less'],
+  selector: 'lx-select-columns',
+  templateUrl: './select-columns.component.html',
+  styleUrls: ['./select-columns.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IndexComponent {
+export class SelectColumnsComponent {
 
   constructor(
     public importService: ImportService,
@@ -19,10 +19,10 @@ export class IndexComponent {
   }
 
   onBackClick() {
-    this._router.navigate(['../settings'], { relativeTo: this._route });
+    this._router.navigate(['../index'], { relativeTo: this._route });
   }
 
   onNextClick() {
-    this._router.navigate(['../columns'], { relativeTo: this._route });
+    this._router.navigate(['../tags'], { relativeTo: this._route });
   }
 }

@@ -8,21 +8,21 @@ import {
 } from 'ng-zorro-antd';
 import { StepsComponent } from './components/steps/steps.component';
 import { ImportComponent } from './import.component';
-import { ColumnsComponent } from './routes/columns/columns.component';
-import { FileComponent } from './routes/file/file.component';
-import { IndexComponent } from './routes/index/index.component';
+import { SelectColumnsComponent } from './routes/select-columns/select-columns.component';
+import { SelectFileComponent } from './routes/select-file/select-file.component';
+import { SelectIndexComponent } from './routes/select-index/select-index.component';
+import { SelectTagsComponent } from './routes/select-tags/select-tags.component';
 import { SettingsComponent } from './routes/settings/settings.component';
-import { TagsComponent } from './routes/tags/tags.component';
 
 
 @NgModule({
   declarations: [
     ImportComponent,
-    FileComponent,
+    SelectFileComponent,
     SettingsComponent,
-    IndexComponent,
-    ColumnsComponent,
-    TagsComponent,
+    SelectIndexComponent,
+    SelectColumnsComponent,
+    SelectTagsComponent,
     StepsComponent
   ],
   imports: [
@@ -41,11 +41,11 @@ import { TagsComponent } from './routes/tags/tags.component';
         path: '',
         component: ImportComponent,
         children: [
-          { path: 'file', component: FileComponent },
+          { path: 'file', component: SelectFileComponent },
           { path: 'settings', component: SettingsComponent },
-          { path: 'index', component: IndexComponent },
-          { path: 'columns', component: ColumnsComponent },
-          { path: 'tags', component: TagsComponent },
+          { path: 'index', component: SelectIndexComponent },
+          { path: 'columns', component: SelectColumnsComponent },
+          { path: 'tags', component: SelectTagsComponent },
           { path: '', redirectTo: 'file', pathMatch: 'full' }
         ]
       }

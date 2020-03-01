@@ -4,12 +4,12 @@ import { IFile } from '@axiom/infrastructure';
 import { ImportService } from '../../import.service';
 
 @Component({
-  selector: 'lx-file',
-  templateUrl: './file.component.html',
-  styleUrls: ['./file.component.less'],
+  selector: 'lx-select-file',
+  templateUrl: './select-file.component.html',
+  styleUrls: ['./select-file.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FileComponent {
+export class SelectFileComponent {
 
   constructor(
     public importService: ImportService,

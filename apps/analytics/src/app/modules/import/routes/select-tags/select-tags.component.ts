@@ -3,12 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ImportService } from '../../import.service';
 
 @Component({
-  selector: 'lx-tags',
-  templateUrl: './tags.component.html',
-  styleUrls: ['./tags.component.less'],
+  selector: 'lx-select-tags',
+  templateUrl: './select-tags.component.html',
+  styleUrls: ['./select-tags.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagsComponent {
+export class SelectTagsComponent {
 
   constructor(
     public importService: ImportService,
