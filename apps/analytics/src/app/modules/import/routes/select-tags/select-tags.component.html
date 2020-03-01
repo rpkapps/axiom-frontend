@@ -1,9 +1,4 @@
 <lx-steps
-  nextText="Import File"
-  showBack
-  showNext
-  [step]="3"
-  (back)="onBackClick()"
-  (next)="importService.importFile()">
-
+  nextText="Import File" showBack showNext [step]="3" (back)="onBackClick()" (next)="importService.importFile()">
+  {{ importService.options | json }}
 </lx-steps>

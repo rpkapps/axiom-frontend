@@ -1,0 +1,10 @@
+<div class="columns">
+  <button
+    *ngFor="let column of columns; let index = index"
+    class="column"
+    [class.column-selected]="selectedMap[index]"
+    (click)="onColumnClick(index)">
+    <div class="column-cell"><b>Column {{ index }}</b></div>
+    <div *ngFor="let cell of column" class="column-cell">{{ cell }}</div>
+  </button>
+</div>

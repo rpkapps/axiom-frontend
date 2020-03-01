@@ -1,3 +1,8 @@
 <lx-steps [step]="1" showBack showNext (next)="onNextClick()" (back)="onBackClick()">
-  {{ importService.filePreview$ | async | json }}
+  <ng-container *ngIf="importService.filePreview$ | async as filePreview">
+    <nz-alert *ngIf="filePreview.Error; else previewTemplate" nzType="error" [nzMessage]="filePreview.Error"></nz-alert>
+    <ng-template #previewTemplate>
+      <lx-columns [columns]="filePreview.Preview"></lx-columns>
+    </ng-template>
+  </ng-container>
 </lx-steps>

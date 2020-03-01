@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import {
+  NzAlertModule,
   NzButtonModule, NzFormModule, NzIconModule, NzInputModule, NzModalModule, NzSelectModule, NzStepsModule,
   NzTypographyModule
 } from 'ng-zorro-antd';
@@ -13,6 +14,7 @@ import { SelectFileComponent } from './routes/select-file/select-file.component'
 import { SelectIndexComponent } from './routes/select-index/select-index.component';
 import { SelectTagsComponent } from './routes/select-tags/select-tags.component';
 import { SettingsComponent } from './routes/settings/settings.component';
+import { ColumnsComponent } from './components/columns/columns.component';
 
 
 @NgModule({
@@ -23,7 +25,8 @@ import { SettingsComponent } from './routes/settings/settings.component';
     SelectIndexComponent,
     SelectColumnsComponent,
     SelectTagsComponent,
-    StepsComponent
+    StepsComponent,
+    ColumnsComponent
   ],
   imports: [
     CommonModule,
@@ -36,6 +39,7 @@ import { SettingsComponent } from './routes/settings/settings.component';
     NzInputModule,
     NzSelectModule,
     NzButtonModule,
+    NzAlertModule,
     RouterModule.forChild([
       {
         path: '',

@@ -1,30 +1,37 @@
 @import 'variables';
 
 @file-selected-color: @primary-color;
-@file-hover-color: @radio-button-hover-color;
+@file-hover-color: @primary-5;
 @file-border-radius: @border-radius-base;
+@file-border-width: @border-width-base;
+@file-border-style: @border-style-base;
+@file-width: 125px;
+@file-height: 125px;
+@file-icon-size: 20px;
 
 .file {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  width: 125px;
-  height: 125px;
+  width: @file-width;
+  height: @file-height;
   text-align: center;
   cursor: pointer;
   background: none;
-  border: 1px solid transparent;
+  border: @file-border-width @file-border-style transparent;
   border-radius: @file-border-radius;
   outline: none;
+  user-select: none;
+  touch-action: manipulation;
 
   &-inner {
     margin-bottom: 18px;
   }
 
   &-selected {
-    border-color: @file-selected-color;
     color: @file-selected-color;
+    border-color: @file-selected-color;
   }
 
   &:hover,
@@ -40,10 +47,11 @@
 
   &-icon {
     display: block;
-    font-size: 20px;
+    font-size: @file-icon-size;
   }
 
   &-name {
     width: 100%;
+    .truncate;
   }
 }
