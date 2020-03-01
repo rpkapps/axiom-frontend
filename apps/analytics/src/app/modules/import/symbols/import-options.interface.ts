@@ -1,6 +1,6 @@
 export interface IImportOptions {
   FileId?: string;
-  IndexColumn?: number;
+  IndexColumns?: number[];
   DataColumns?: number[];
   DataTypeId?: string;
   TimeTypeId?: string;

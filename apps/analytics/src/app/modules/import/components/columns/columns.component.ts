@@ -11,17 +11,27 @@ import {
 export class ColumnsComponent implements OnChanges {
   @Input() columns: string[][];
   @Input() selected: number[] = [];
+  @Input() hideColumns: number[];
   @Output() selectedChange = new EventEmitter<number[]>();
 
   selectedMap: boolean[] = [];
+  hideColumnsMap: boolean[] = [];
 
   constructor(private _cdr: ChangeDetectorRef) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.selected) {
       this.selected = this.selected || [];
+
       this.selectedMap.length = 0;
       this.selected.forEach(columnIndex => this.selectedMap[columnIndex] = true);
+    }
+
+    if (changes.hideColumns) {
+      this.hideColumns = this.hideColumns || [];
+
+      this.hideColumnsMap.length = 0;
+      this.hideColumns.forEach(columnIndex => this.hideColumnsMap[columnIndex] = true);
     }
   }
 
