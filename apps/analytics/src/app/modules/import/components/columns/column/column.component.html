@@ -1,0 +1,37 @@
+<div *ngIf="taggable" class="column-tags-wrapper">
+  <button
+    #buttonElement
+    *ngIf="!inputVisible"
+    class="column-add-tag-btn"
+    nz-button
+    nzSize="small"
+    nzType="link"
+    (focusin)="onAddTagClick()"
+    (click)="onAddTagClick()">
+    <i nz-icon nzType="plus"></i> Add Tag
+  </button>
+
+  <input
+    #inputElement
+    *ngIf="inputVisible"
+    class="column-add-tag-input"
+    nz-input
+    nzSize="small"
+    type="text"
+    [(ngModel)]="newTag"
+    (blur)="onInputBlur()"
+    (keydown.enter)="onInputEnter()" />
+
+  <nz-tag
+    *ngFor="let tag of tags; let i = index"
+    class="column-tag"
+    nzMode="closeable"
+    (nzOnClose)="onTagRemove(i)">
+    <span class="column-tag-inner">{{ tag }}</span>
+  </nz-tag>
+</div>
+
+<div class="column-cells-wrapper">
+  <div class="column-cell column-head"><b>{{ header }}</b></div>
+  <div *ngFor="let cell of cells" class="column-cell">{{ cell }}</div>
+</div>

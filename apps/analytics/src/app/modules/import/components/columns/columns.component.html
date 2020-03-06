@@ -1,12 +1,14 @@
 <div class="columns">
   <ng-container *ngFor="let column of columns; let index = index">
-    <button
-      *ngIf="!hideColumnsMap[index]"
-      class="column"
-      [class.column-selected]="selectedMap[index]"
-      (click)="onColumnClick(index)">
-      <div class="column-cell"><b>Column {{ index }}</b></div>
-      <div *ngFor="let cell of column" class="column-cell">{{ cell }}</div>
-    </button>
+    <lx-column
+      *ngIf="!hideColumnsMap[index] && (!showColumns || showColumnsMap[index])"
+      [header]="'Column ' + index"
+      [tags]="tags && tags[index]"
+      [cells]="column"
+      [selectable]="selectable"
+      [selected]="selectedMap[index]"
+      [taggable]="taggable"
+      (click)="selectable && onColumnClick(index)"
+      (tagsChange)="onTagsChange(index, $event)"></lx-column>
   </ng-container>
 </div>

@@ -1,6 +1,17 @@
 <lx-steps
   nextText="Import File" showBack showNext [step]="3" (back)="onBackClick()" (next)="importService.importFile()">
-  <h2 class="u-text-center" nz-title>Tag columns</h2>
-  <p class="u-text-center" nz-paragraph>Tags indicate the purpose of each column.</p>
+  <ng-container *ngIf="importService.filePreview$ | async as filePreview">
+    <nz-alert *ngIf="filePreview.Error; else previewTemplate" nzType="error" [nzMessage]="filePreview.Error"></nz-alert>
+    <ng-template #previewTemplate>
+      <h2 class="u-text-center" nz-title>Tag columns</h2>
+      <p class="u-text-center" nz-paragraph>Tags indicate the purpose of each column.</p>
+      <lx-columns
+        taggable
+        [(tags)]="importService.options.ColumnTags"
+        [columns]="filePreview.Preview"
+        [showColumns]="columnsToShow"></lx-columns>
+    </ng-template>
+  </ng-container>
+
   {{ importService.options | json }}
 </lx-steps>

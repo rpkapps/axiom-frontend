@@ -31,7 +31,6 @@ export class ImportService implements OnDestroy {
     this.files$ = combineLatest([this._files$, this._appService.uploads$])
       .pipe(
         map(([a, b]) => {
-          console.log(a, b);
           return [...a, ...b];
         })
       );

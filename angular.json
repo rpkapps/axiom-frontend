@@ -42,7 +42,7 @@
               }
             ],
             "styles": [
-              "libs/ui/src/styles/core.less",
+              "libs/ui/src/styles/entry.less",
               "apps/analytics/src/styles.less"
             ],
             "scripts": []

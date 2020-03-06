@@ -9,11 +9,15 @@ export interface IImportOptions {
   IgnoredRows?: number[];
   IgnoredColumns?: number[];
   Overrides?: ICellValue[];
-  ColumnTags?: { [Column: number]: string[] };
+  ColumnTags?: IColumnTags;
 }
 
 export interface  ICellValue {
   Row: number;
   Column: number;
   Value: string;
+}
+
+export interface IColumnTags {
+  [Column: number]: string[]
 }

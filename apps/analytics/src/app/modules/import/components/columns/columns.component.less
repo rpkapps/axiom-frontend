@@ -1,60 +1,9 @@
-@import 'node_modules/ng-zorro-antd/button/style/mixin';
-@import 'variables';
-
-@column-selected-color: @primary-color;
-@column-hover-color: @primary-5;
-@column-border-radius: @border-radius-base;
-@column-border-width: @border-width-base;
-@column-border-style: @border-style-base;
-@column-border-color: @btn-default-border;
-@column-top-padding: @padding-lg;
-@column-gap: 10px;
-@column-width: 90px;
-
-
 :host {
   display: block;
   max-width: 100%;
   overflow-x: auto;
   text-align: center;
   margin: 0 auto;
-}
-
-.column {
-  width: @column-width;
-  min-width: @column-width;
-  text-align: center;
-  position: relative;
-  display: inline-block;
-  font-weight: @btn-font-weight;
-  white-space: nowrap;
-  background: none;
-  border: @column-border-width @column-border-style @column-border-color;
-  border-radius: @column-border-radius;
-  cursor: pointer;
-  user-select: none;
-  touch-action: manipulation;
-  padding: @column-top-padding 0;
-  outline: 0;
-
-  &-selected {
-    color: @column-selected-color;
-    border-color: @column-selected-color;
-  }
-
-  &:not(:last-child) {
-    margin-right: @column-gap;
-  }
-
-  &:hover,
-  &:focus {
-    color: @column-hover-color;
-  }
-
-  &-cell {
-    max-width: 100%;
-    .truncate;
-  }
 }
 
 .columns {

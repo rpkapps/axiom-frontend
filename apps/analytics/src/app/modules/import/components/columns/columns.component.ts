@@ -1,6 +1,8 @@
 import {
-  Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges
 } from '@angular/core';
+import { InputBoolean } from 'ng-zorro-antd';
+import { IColumnTags } from '../../symbols';
 
 @Component({
   selector: 'lx-columns',
@@ -10,12 +12,20 @@ import {
 })
 export class ColumnsComponent implements OnChanges {
   @Input() columns: string[][];
-  @Input() selected: number[] = [];
+  @Input() showColumns: number[];
   @Input() hideColumns: number[];
+
+  @Input() @InputBoolean() taggable: boolean;
+  @Input() tags: IColumnTags = {};
+  @Output() tagsChange = new EventEmitter<IColumnTags>();
+
+  @Input() @InputBoolean() selectable: boolean;
+  @Input() selected: number[] = [];
   @Output() selectedChange = new EventEmitter<number[]>();
 
   selectedMap: boolean[] = [];
   hideColumnsMap: boolean[] = [];
+  showColumnsMap: boolean[] = [];
 
   constructor(private _cdr: ChangeDetectorRef) { }
 
@@ -33,6 +43,13 @@ export class ColumnsComponent implements OnChanges {
       this.hideColumnsMap.length = 0;
       this.hideColumns.forEach(columnIndex => this.hideColumnsMap[columnIndex] = true);
     }
+
+    if (changes.showColumns) {
+      this.showColumns = this.showColumns || [];
+
+      this.showColumnsMap.length = 0;
+      this.showColumns.forEach(columnIndex => this.showColumnsMap[columnIndex] = true);
+    }
   }
 
   onColumnClick(columnIndex: number) {
@@ -45,6 +62,11 @@ export class ColumnsComponent implements OnChanges {
     }
 
     this.selectedChange.emit(this.selected);
-    this._cdr.markForCheck();
+  }
+
+  onTagsChange(columnIndex: number, tags: string[]) {
+    this.tags = this.tags || {};
+    this.tags[columnIndex] = tags;
+    this.tagsChange.emit(this.tags);
   }
 }

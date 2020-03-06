@@ -3,10 +3,11 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import {
-  NzAlertModule,
-  NzButtonModule, NzFormModule, NzIconModule, NzInputModule, NzModalModule, NzSelectModule, NzStepsModule,
-  NzTypographyModule
+  NzAlertModule, NzButtonModule, NzFormModule, NzIconModule, NzInputModule, NzModalModule, NzSelectModule,
+  NzStepsModule, NzTagModule, NzTypographyModule
 } from 'ng-zorro-antd';
+import { ColumnComponent } from './components/columns/column/column.component';
+import { ColumnsComponent } from './components/columns/columns.component';
 import { StepsComponent } from './components/steps/steps.component';
 import { ImportComponent } from './import.component';
 import { SelectColumnsComponent } from './routes/select-columns/select-columns.component';
@@ -14,7 +15,6 @@ import { SelectFileComponent } from './routes/select-file/select-file.component'
 import { SelectIndexComponent } from './routes/select-index/select-index.component';
 import { SelectTagsComponent } from './routes/select-tags/select-tags.component';
 import { SettingsComponent } from './routes/settings/settings.component';
-import { ColumnsComponent } from './components/columns/columns.component';
 
 
 @NgModule({
@@ -26,6 +26,7 @@ import { ColumnsComponent } from './components/columns/columns.component';
     SelectColumnsComponent,
     SelectTagsComponent,
     StepsComponent,
+    ColumnComponent,
     ColumnsComponent
   ],
   imports: [
@@ -40,6 +41,7 @@ import { ColumnsComponent } from './components/columns/columns.component';
     NzSelectModule,
     NzButtonModule,
     NzAlertModule,
+    NzTagModule,
     RouterModule.forChild([
       {
         path: '',

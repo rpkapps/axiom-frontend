@@ -5,6 +5,7 @@
       <h2 class="u-text-center" nz-title>Selected data columns to import</h2>
       <p class="u-text-center" nz-paragraph>Columns not selected will be excluded from analysis.</p>
       <lx-columns
+        selectable
         [(selected)]="importService.options.DataColumns"
         [columns]="filePreview.Preview"
         [hideColumns]="importService.options.IndexColumns"></lx-columns>
