@@ -59,6 +59,7 @@ class ThemePostProcessor {
   }
 
   process(_, extra) {
+    this.addNgDeep = extra.imports.rootFilename.includes('.component.less');
     const colorsPerTheme = this.removeColorsThatAreTheSameInEachTheme(this.findAllColorsForEachTheme());
     const themeRules = this.createThemeRules(colorsPerTheme);
     const css = this.replaceColorsWithCssVars(colorsPerTheme);
@@ -92,7 +93,7 @@ class ThemePostProcessor {
           .map((color, i) => `${ this.createCssVar(i) }: ${ color.color };`)
           .join('');
 
-        return `.theme-${ themeName }{${ declarations }}`;
+        return `${ this.addNgDeep ? '::ng-deep' : '' } .theme-${ themeName }{${ declarations }}`;
       })
       .join('\n');
   }
