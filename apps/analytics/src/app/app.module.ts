@@ -3,7 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { InitializerService } from '@axiom/infrastructure';
+import { InitializerService, STORAGE_PREFIX } from '@axiom/infrastructure';
 import { en_US, NZ_I18N, NzButtonModule } from 'ng-zorro-antd';
 import { AppComponent } from './app.component';
 import { ImportModule } from './modules/import/import.module';
@@ -33,6 +33,7 @@ export function appInitializerFactory(initializer: InitializerService) {
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
+    { provide: STORAGE_PREFIX, useValue: 'lx_' },
     { provide: APP_INITIALIZER, useFactory: appInitializerFactory, deps: [InitializerService], multi: true }
   ],
   bootstrap: [AppComponent]

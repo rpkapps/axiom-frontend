@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ApiService, IFile, IStatus, NotificationService } from '@axiom/infrastructure';
+import { ApiService, IFile, IStatus, NotificationService, StorageService } from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -10,8 +10,7 @@ import {
 
 @Injectable()
 export class ImportService implements OnDestroy {
-  options: IImportOptions = {} as IImportOptions;
-
+  options: IImportOptions = this._storageService.sessionStorageSync('ImportOptions', {});
   files$: Observable<IFile[]>;
   dataTypes$ = new BehaviorSubject<IDataType[]>(null);
   timeTypes$ = new BehaviorSubject<ITimeType[]>(null);
@@ -22,6 +21,7 @@ export class ImportService implements OnDestroy {
   private _files$ = new BehaviorSubject<IFile[]>([]);
 
   constructor(
+    private _storageService: StorageService,
     private _apiService: ApiService,
     private _notificationService: NotificationService,
     private _appService: AppService

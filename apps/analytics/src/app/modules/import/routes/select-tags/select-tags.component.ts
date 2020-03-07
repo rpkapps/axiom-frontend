@@ -13,7 +13,7 @@ export class SelectTagsComponent {
     public importService: ImportService,
     private _router: Router,
     private _route: ActivatedRoute
-  ) { }
+  ) {}
 
   get columnsToShow() {
     const {IndexColumns, DataColumns} = this.importService.options;

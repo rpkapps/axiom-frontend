@@ -14,9 +14,7 @@ export class SelectColumnsComponent {
     public importService: ImportService,
     private _router: Router,
     private _route: ActivatedRoute
-  ) {
-    this.importService.previewFile();
-  }
+  ) {}
 
   onBackClick() {
     this._router.navigate(['../index'], { relativeTo: this._route });
