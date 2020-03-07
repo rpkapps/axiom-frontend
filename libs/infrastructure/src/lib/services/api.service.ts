@@ -28,6 +28,7 @@ export class ApiService {
     formData.set('WorkspaceId', workspaceId);
 
     const response = <IFile> {
+      WorkspaceId: workspaceId,
       FileId: null,
       FileName: file.name,
       Progress: 0,

@@ -4,7 +4,7 @@
   <button
     *ngFor="let file of files; trackBy: trackByFileId"
     class="file"
-    [class.file-selected]="file.FileId === importService.options.FileId"
+    [class.file-selected]="file.FileId === importService.analyzeOptions.FileId"
     (click)="onFileClick(file)">
     <div class="file-inner">
       <i class="file-icon" nz-icon nzTheme="outline" nzType="file-text"></i>

@@ -1,16 +1,18 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ApiService, IFile, IStatus, NotificationService, StorageService } from '@axiom/infrastructure';
+import { ApiService, IFile, IStatus, NotificationService, objectsEqual, StorageService } from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { AppService } from '../../app.service';
 import {
-  IAnalysisError, IAnalyzeResponse, IDataType, IFilePreview, IImportOptions, ITagGroup, ITimeType
+  IAnalysisError, IAnalyzeOptions, IAnalyzeResponse, IDataType, IFilePreview, IImportOptions, ITagGroup, ITimeType
 } from './symbols';
 
 @Injectable()
 export class ImportService implements OnDestroy {
-  options: IImportOptions = {} as IImportOptions;
+  analyzeOptions: IAnalyzeOptions = {} as IAnalyzeOptions;
+  importOptions: IImportOptions = {} as IImportOptions;
+
   files$: Observable<IFile[]>;
   dataTypes$ = new BehaviorSubject<IDataType[]>(null);
   timeTypes$ = new BehaviorSubject<ITimeType[]>(null);
@@ -19,6 +21,8 @@ export class ImportService implements OnDestroy {
   tagGroup$ = new BehaviorSubject<ITagGroup>(null);
 
   private _files$ = new BehaviorSubject<IFile[]>([]);
+  private _analyzeTransactionId: string;
+  private _sentAnalyzeOptions: IAnalyzeOptions;
 
   constructor(
     private _storageService: StorageService,
@@ -85,7 +89,7 @@ export class ImportService implements OnDestroy {
     this._apiService
       .sendQuery<string[][]>({
         Key: 'PreviewFile',
-        FileId: this.options.FileId
+        FileId: this.analyzeOptions.FileId
       })
       .then(preview => {
         this.filePreview$.next({ Preview: preview });
@@ -96,13 +100,29 @@ export class ImportService implements OnDestroy {
   }
 
   analyzeFile() {
+    if (objectsEqual(this.analyzeOptions, this._sentAnalyzeOptions)) {
+      return;
+    }
+
+    if (this._analyzeTransactionId) {
+      this._apiService
+        .sendCommand({
+          Key: 'Cancel',
+          CommandId: this._analyzeTransactionId
+        });
+    }
+
+    this._sentAnalyzeOptions = { ...this.analyzeOptions };
+
     this._apiService
       .sendCommand({
-        ...this.options,
+        ...this.analyzeOptions,
         Key: 'AnalyzeFile'
       })
+      .then(command => this._analyzeTransactionId = command.TransactionId)
       .catch(() => {
         this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
+        this._sentAnalyzeOptions = null;
       });
   }
 
@@ -112,7 +132,7 @@ export class ImportService implements OnDestroy {
         Key: 'Object',
         CollectionKey: 'TagGroup',
         IdKey: 'TagGroupId',
-        IdValue: this.options.DataTypeId
+        IdValue: this.analyzeOptions.DataTypeId
       })
       .then(tagGroup => {
         this.tagGroup$.next(tagGroup);
@@ -122,8 +142,9 @@ export class ImportService implements OnDestroy {
   importFile() {
     this._apiService
       .sendCommand({
-        ...this.options,
-        Key: 'ImportFile'
+        ...this.importOptions,
+        Key: 'ImportFile',
+        WorkspaceId: this._appService.workspaceId
       })
       .catch(() => {
         // TODO RK: Notify user of error
@@ -135,10 +156,9 @@ export class ImportService implements OnDestroy {
   private _subscribeToAnalyze() {
     this._notificationService.$
       .pipe(
-        filter(s =>
-          s.Key === 'Status'
-          && s.Command.Key === 'AnalyzeFile'
-          && s.Command.FileId === this.options.FileId
+        filter(notification =>
+          notification.Key === 'Status' &&
+          notification.Command.TransactionId === this._analyzeTransactionId
         ),
         untilDestroyed(this)
       )

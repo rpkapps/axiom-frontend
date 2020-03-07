@@ -10,7 +10,7 @@
           nzShowSearch
           nzSize="small"
           required
-          [(ngModel)]="importService.options.DataTypeId">
+          [(ngModel)]="importService.analyzeOptions.DataTypeId">
           <nz-option
             *ngFor="let dataType of importService.dataTypes$ | async"
             [nzLabel]="dataType.DataTypeName"
@@ -28,7 +28,7 @@
           nzShowSearch
           nzSize="small"
           required
-          [(ngModel)]="importService.options.TimeTypeId">
+          [(ngModel)]="importService.analyzeOptions.TimeTypeId">
           <nz-option
             *ngFor="let timeType of importService.timeTypes$ | async"
             [nzLabel]="timeType.TimeTypeName"
@@ -44,7 +44,7 @@
           nz-input
           nzSize="small"
           placeholder="Optional"
-          [(ngModel)]="importService.options.EmptyValue" />
+          [(ngModel)]="importService.analyzeOptions.EmptyValue" />
       </nz-form-control>
     </nz-form-item>
   </form>

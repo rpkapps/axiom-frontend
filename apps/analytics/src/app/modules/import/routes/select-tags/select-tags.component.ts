@@ -13,10 +13,12 @@ export class SelectTagsComponent {
     public importService: ImportService,
     private _router: Router,
     private _route: ActivatedRoute
-  ) {}
+  ) {
+    importService.getTagGroup();
+  }
 
   get columnsToShow() {
-    const {IndexColumns, DataColumns} = this.importService.options;
+    const {IndexColumns, DataColumns} = this.importService.analyzeOptions;
     return [...(IndexColumns || []), ...(DataColumns || [])];
   }
 

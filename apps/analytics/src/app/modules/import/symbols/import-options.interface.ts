@@ -1,10 +1,13 @@
-export interface IImportOptions {
+export interface IAnalyzeOptions {
   FileId?: string;
   IndexColumns?: number[];
   DataColumns?: number[];
   DataTypeId?: string;
   TimeTypeId?: string;
   EmptyValue?: string;
+}
+
+export interface IImportOptions {
   FixIds?: string[];
   IgnoredRows?: number[];
   IgnoredColumns?: number[];

@@ -7,11 +7,11 @@
       <p class="u-text-center" nz-paragraph>Tags indicate the purpose of each column.</p>
       <lx-columns
         taggable
-        [(tags)]="importService.options.ColumnTags"
+        [(tags)]="importService.importOptions.ColumnTags"
         [columns]="filePreview.Preview"
         [showColumns]="columnsToShow"></lx-columns>
     </ng-template>
   </ng-container>
 
-  {{ importService.options | json }}
+  {{ importService.importOptions | json }}
 </lx-steps>
