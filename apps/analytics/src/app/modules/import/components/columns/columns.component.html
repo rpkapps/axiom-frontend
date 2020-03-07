@@ -1,13 +1,18 @@
+<div *ngIf="showToggleAll" class="columns-toggle-all">
+  <button class="columns-toggle-all-btn" nz-button nzSize="small" nzType="link" (click)="onToggleAllClick()">
+    {{ allSelected ? 'Clear' : 'Select' }} All
+  </button>
+</div>
 <div class="columns">
   <ng-container *ngFor="let column of columns; let index = index">
     <lx-column
-      *ngIf="!hideColumnsMap[index] && (!showColumns || showColumnsMap[index])"
-      [header]="'Column ' + index"
-      [tags]="tags && tags[index]"
+      *ngIf="isColumnVisible(index)"
       [cells]="column"
+      [header]="'Column ' + index"
       [selectable]="selectable"
-      [selected]="selectedMap[index]"
+      [selected]="isSelected(index)"
       [taggable]="taggable"
+      [tags]="tags && tags[index]"
       (click)="selectable && onColumnClick(index)"
       (tagsChange)="onTagsChange(index, $event)"></lx-column>
   </ng-container>

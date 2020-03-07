@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges
 } from '@angular/core';
+import { toggleItemInArray } from '@axiom/infrastructure';
 import { InputBoolean } from 'ng-zorro-antd';
 import { IColumnTags } from '../../symbols';
 
@@ -20,53 +21,55 @@ export class ColumnsComponent implements OnChanges {
   @Output() tagsChange = new EventEmitter<IColumnTags>();
 
   @Input() @InputBoolean() selectable: boolean;
+  @Input() @InputBoolean() showToggleAll: boolean;
   @Input() selected: number[] = [];
   @Output() selectedChange = new EventEmitter<number[]>();
 
-  selectedMap: boolean[] = [];
-  hideColumnsMap: boolean[] = [];
-  showColumnsMap: boolean[] = [];
+  allSelected: boolean;
 
   constructor(private _cdr: ChangeDetectorRef) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.selected) {
-      this.selected = this.selected || [];
+  get selectableColumnsLength() {
+    return this.columns
+      .filter((_, columnIndex) =>
+        this.isColumnVisible(columnIndex)
+      )
+      .length;
+  }
 
-      this.selectedMap.length = 0;
-      this.selected.forEach(columnIndex => this.selectedMap[columnIndex] = true);
-    }
+  ngOnChanges(changes: SimpleChanges) {}
 
-    if (changes.hideColumns) {
-      this.hideColumns = this.hideColumns || [];
-
-      this.hideColumnsMap.length = 0;
-      this.hideColumns.forEach(columnIndex => this.hideColumnsMap[columnIndex] = true);
-    }
-
-    if (changes.showColumns) {
-      this.showColumns = this.showColumns || [];
-
-      this.showColumnsMap.length = 0;
-      this.showColumns.forEach(columnIndex => this.showColumnsMap[columnIndex] = true);
-    }
+  onToggleAllClick() {
+    this.selected = !this.allSelected ? this.retrieveSelectableColumns() : [];
+    this.allSelected = !this.allSelected;
+    this.selectedChange.next(this.selected);
   }
 
   onColumnClick(columnIndex: number) {
-    if (this.selectedMap[columnIndex]) {
-      this.selected.splice(this.selected.indexOf(columnIndex), 1);
-      this.selectedMap[columnIndex] = false;
-    } else {
-      this.selected.push(columnIndex);
-      this.selectedMap[columnIndex] = true;
-    }
-
-    this.selectedChange.emit(this.selected);
+    this.selected = this.selected || [];
+    toggleItemInArray(this.selected, columnIndex);
+    this.allSelected = this.selectableColumnsLength === this.selected.length;
+    this.selectedChange.next(this.selected);
   }
 
   onTagsChange(columnIndex: number, tags: string[]) {
     this.tags = this.tags || {};
     this.tags[columnIndex] = tags;
     this.tagsChange.emit(this.tags);
+  }
+
+  isSelected(columnIndex: number) {
+    return this.selected?.includes(columnIndex);
+  }
+
+  isColumnVisible(columnIndex: number) {
+    return !this.hideColumns?.includes(columnIndex)
+      && (!this.showColumns || this.showColumns.includes(columnIndex));
+  }
+
+  private retrieveSelectableColumns() {
+    return this.columns
+      .map((_, columnIndex) => columnIndex)
+      .filter(columnIndex => this.isColumnVisible(columnIndex))
   }
 }

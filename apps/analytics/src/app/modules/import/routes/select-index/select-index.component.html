@@ -6,6 +6,7 @@
       <p class="u-text-center" nz-paragraph>These columns will be used for ordering all data in the table.</p>
       <lx-columns
         selectable
+        showToggleAll
         [(selected)]="importService.options.IndexColumns"
         [columns]="filePreview.Preview"
         [hideColumns]="importService.options.DataColumns"></lx-columns>
