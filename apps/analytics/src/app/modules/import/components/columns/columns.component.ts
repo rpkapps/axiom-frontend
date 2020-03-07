@@ -1,6 +1,4 @@
-import {
-  ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { toggleItemInArray } from '@axiom/infrastructure';
 import { InputBoolean } from 'ng-zorro-antd';
 import { IColumnTags } from '../../symbols';
@@ -11,7 +9,7 @@ import { IColumnTags } from '../../symbols';
   styleUrls: ['./columns.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ColumnsComponent implements OnChanges {
+export class ColumnsComponent {
   @Input() columns: string[][];
   @Input() showColumns: number[];
   @Input() hideColumns: number[];
@@ -29,18 +27,8 @@ export class ColumnsComponent implements OnChanges {
 
   constructor(private _cdr: ChangeDetectorRef) { }
 
-  get selectableColumnsLength() {
-    return this.columns
-      .filter((_, columnIndex) =>
-        this.isColumnVisible(columnIndex)
-      )
-      .length;
-  }
-
-  ngOnChanges(changes: SimpleChanges) {}
-
   onToggleAllClick() {
-    this.selected = !this.allSelected ? this.retrieveSelectableColumns() : [];
+    this.selected = !this.allSelected ? this._retrieveSelectableColumns() : [];
     this.allSelected = !this.allSelected;
     this.selectedChange.next(this.selected);
   }
@@ -48,7 +36,7 @@ export class ColumnsComponent implements OnChanges {
   onColumnClick(columnIndex: number) {
     this.selected = this.selected || [];
     toggleItemInArray(this.selected, columnIndex);
-    this.allSelected = this.selectableColumnsLength === this.selected.length;
+    this.allSelected = this._retrieveSelectableColumns().length === this.selected.length;
     this.selectedChange.next(this.selected);
   }
 
@@ -67,9 +55,9 @@ export class ColumnsComponent implements OnChanges {
       && (!this.showColumns || this.showColumns.includes(columnIndex));
   }
 
-  private retrieveSelectableColumns() {
+  private _retrieveSelectableColumns() {
     return this.columns
       .map((_, columnIndex) => columnIndex)
-      .filter(columnIndex => this.isColumnVisible(columnIndex))
+      .filter(columnIndex => this.isColumnVisible(columnIndex));
   }
 }
