@@ -8,21 +8,13 @@ export const STORAGE_PREFIX = new InjectionToken('STORAGE_KEY', { factory: () =>
 export class StorageService {
   constructor(@Inject(STORAGE_PREFIX) private _prefix) {}
 
-  localStorageSync(key: string, state: any) {
-    return this._webStorageSync(localStorage, key, state);
-  }
+  syncObject(key: string, initialState: Object) {
+    initialState = JSON.parse(localStorage.getItem(this._prefix + key)) || initialState || {};
 
-  sessionStorageSync(key: string, state: any) {
-    return this._webStorageSync(sessionStorage, key, state);
-  }
-
-  private _webStorageSync(storage: Storage, key: string, state: any) {
-    state = JSON.parse(storage.getItem(this._prefix + key)) || state || {};
-
-    return new Proxy(state, {
+    return new Proxy(initialState, {
       set: (target: Object, prop: string, value: any) => {
         target[prop] = value;
-        storage.setItem(this._prefix + key, JSON.stringify(target));
+        localStorage.setItem(this._prefix + key, JSON.stringify(target));
         return true;
       }
     });

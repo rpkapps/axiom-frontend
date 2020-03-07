@@ -10,7 +10,7 @@ import {
 
 @Injectable()
 export class ImportService implements OnDestroy {
-  options: IImportOptions = this._storageService.sessionStorageSync('ImportOptions', {});
+  options: IImportOptions = {} as IImportOptions;
   files$: Observable<IFile[]>;
   dataTypes$ = new BehaviorSubject<IDataType[]>(null);
   timeTypes$ = new BehaviorSubject<ITimeType[]>(null);
