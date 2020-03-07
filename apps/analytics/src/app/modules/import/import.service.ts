@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ApiService, IFile, IStatus, NotificationService, StorageService } from '@axiom/infrastructure';
-import { untilDestroyed } from 'ngx-take-until-destroy';
+import { ApiService, IFile, IStatus, StorageService } from '@axiom/infrastructure';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AppService } from '../../app.service';
 import {
   IAnalysisError, IAnalyzeResponse, IDataType, IFilePreview, IImportOptions, ITagGroup, ITimeType
@@ -23,11 +22,8 @@ export class ImportService implements OnDestroy {
   constructor(
     private _storageService: StorageService,
     private _apiService: ApiService,
-    private _notificationService: NotificationService,
     private _appService: AppService
   ) {
-    this._subscribeToAnalyze();
-
     this.files$ = combineLatest([this._files$, this._appService.uploads$])
       .pipe(
         map(([a, b]) => {
@@ -48,6 +44,7 @@ export class ImportService implements OnDestroy {
         FilterKey: 'WorkspaceId',
         FilterValue: this._appService.workspaceId
       })
+      .toPromise()
       .then(files => {
         const fruits = ['Açaí', 'Akee', 'Apple', 'Apricot', 'Avocado', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Black sapote', 'Blueberry', 'Boysenberry', 'Cactus pear', 'Crab apple', 'Currant', 'Cherry', 'Chico fruit', 'Cloudberry', 'Coconut', 'Cranberry', 'Damson', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Goji berry', 'Gooseberry', 'Grape', 'Raisin', 'Grapefruit', 'Guava'];
         const fruitFiles = fruits.map(fruit => <IFile> {
@@ -65,6 +62,7 @@ export class ImportService implements OnDestroy {
         Key: 'List',
         CollectionKey: 'DataType'
       })
+      .toPromise()
       .then(dataTypes => {
         this.dataTypes$.next(dataTypes);
       });
@@ -76,6 +74,7 @@ export class ImportService implements OnDestroy {
         Key: 'List',
         CollectionKey: 'TimeType'
       })
+      .toPromise()
       .then(timeTypes => {
         this.timeTypes$.next(timeTypes);
       });
@@ -87,6 +86,7 @@ export class ImportService implements OnDestroy {
         Key: 'PreviewFile',
         FileId: this.options.FileId
       })
+      .toPromise()
       .then(preview => {
         this.filePreview$.next({ Preview: preview });
       })
@@ -97,13 +97,27 @@ export class ImportService implements OnDestroy {
 
   analyzeFile() {
     this._apiService
-      .sendCommand({
+      .sendCommandAndListen({
         ...this.options,
         Key: 'AnalyzeFile'
       })
-      .catch(() => {
-        this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
-      });
+      .subscribe(
+        (status: IStatus<IAnalysisError[]>) => {
+          switch (status.State) {
+            case 'InProgress':
+              this.analyzeResponse$.next({ Progress: status.Progress });
+              break;
+            case 'Completed':
+              this.analyzeResponse$.next({ Analysis: status.Result });
+              break;
+            case 'Failed':
+              this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
+          }
+        },
+        error => {
+          this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
+        }
+      );
   }
 
   getTagGroup() {
@@ -114,6 +128,7 @@ export class ImportService implements OnDestroy {
         IdKey: 'TagGroupId',
         IdValue: this.options.DataTypeId
       })
+      .toPromise()
       .then(tagGroup => {
         this.tagGroup$.next(tagGroup);
       });
@@ -123,43 +138,14 @@ export class ImportService implements OnDestroy {
     this._apiService
       .sendCommand({
         ...this.options,
-        Key: 'ImportFile'
+        Key: 'ImportFile',
+        WorkspaceId: this._appService.workspaceId
       })
+      .toPromise()
       .catch(() => {
         // TODO RK: Notify user of error
       });
   }
 
   ngOnDestroy() {}
-
-  private _subscribeToAnalyze() {
-    this._notificationService.$
-      .pipe(
-        filter(s =>
-          s.Key === 'Status'
-          && s.Command.Key === 'AnalyzeFile'
-          && s.Command.FileId === this.options.FileId
-        ),
-        untilDestroyed(this)
-      )
-      .subscribe((status: IStatus) => {
-        switch (status.State) {
-          case 'InProgress':
-            this.analyzeResponse$.next({ Progress: status.Progress });
-            break;
-          case 'Completed':
-            this._apiService
-              .sendQuery<IAnalysisError[]>(status.ResultQuery)
-              .then(analysis => {
-                this.analyzeResponse$.next({ Analysis: analysis });
-              })
-              .catch(() => {
-                this.analyzeResponse$.next({ Error: 'Failed to load analysis.' });
-              });
-            break;
-          case 'Failed':
-            this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
-        }
-      });
-  }
 }

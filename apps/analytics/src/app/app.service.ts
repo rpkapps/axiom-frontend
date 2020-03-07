@@ -36,9 +36,10 @@ export class AppService {
   private _subscribeToImports() {
     this._notificationService.$
       .pipe(
-        filter(s =>
-          s.Key === 'Status'
-          && s.Command.Key === 'ImportFile'
+        filter(notification =>
+          notification.Key === 'Status' &&
+          notification.Command.Key === 'ImportFile' &&
+          notification.Command.WorkspaceId === this.workspaceId
         )
       )
       .subscribe((status: IStatus) => {

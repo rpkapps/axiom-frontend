@@ -1,9 +1,10 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as msgpack5 from 'msgpack5';
-import { asyncScheduler, of } from 'rxjs';
-import { catchError, filter, map, throttleTime } from 'rxjs/operators';
-import { config, ICommand, IFile, IQuery } from '../symbols';
+import { asyncScheduler, Observable, of } from 'rxjs';
+import { catchError, filter, map, mergeMap, throttleTime } from 'rxjs/operators';
+import { config, ICommand, IFile, IQuery, IStatus } from '../symbols';
+import { NotificationService } from './notification.service';
 
 const { encode, decode } = msgpack5();
 
@@ -12,14 +13,21 @@ const { encode, decode } = msgpack5();
 })
 export class ApiService {
 
-  constructor(private _http: HttpClient) {}
+  constructor(
+    private _http: HttpClient,
+    private _notificationService: NotificationService
+  ) {}
 
   sendCommand(command: ICommand) {
-    return this._post<ICommand>(`${ config.ApiUrl }/command`, command).toPromise();
+    return this._post<ICommand>(`${ config.ApiUrl }/command`, command);
+  }
+
+  sendCommandAndListen(command: ICommand) {
+    return this._queryResult(this._returnStatus(this.sendCommand(command)));
   }
 
   sendQuery<T>(query: IQuery) {
-    return this._post<T>(`${ config.ApiUrl }/query`, query).toPromise();
+    return this._post<T>(`${ config.ApiUrl }/query`, query);
   }
 
   upload(workspaceId: string, file: File) {
@@ -30,6 +38,7 @@ export class ApiService {
     const response = <IFile> {
       FileId: null,
       FileName: file.name,
+      WorkspaceId: workspaceId,
       Progress: 0,
       Status: 'Uploading'
     };
@@ -63,6 +72,37 @@ export class ApiService {
           return of(response);
         })
       );
+  }
+
+  private _returnStatus(command$: Observable<ICommand>) {
+    return command$.pipe(
+      mergeMap(response => {
+        return this._notificationService.$.pipe(
+          filter(notification =>
+            notification.Key === 'Status' &&
+            notification.Command.TransactionId === response.TransactionId
+          )
+        );
+      })
+    ) as Observable<IStatus>;
+  }
+
+  private _queryResult(status$: Observable<IStatus>) {
+    return status$.pipe(
+      mergeMap(status => {
+        if (status.State === 'Completed' && status.ResultQuery) {
+          return this.sendQuery(status.ResultQuery)
+            .pipe(
+              map(result => {
+                status.Result = result;
+                return status;
+              })
+            );
+        } else {
+          return of(status);
+        }
+      })
+    );
   }
 
   private _post<T>(url: string, body: any) {
