@@ -1,0 +1,21 @@
+.@{dialog-prefix-cls} {
+  &-fit-vertically {
+    .@{dialog-prefix-cls} {
+      top: 10%;
+      padding: 0;
+      height: 90%;
+      max-width: calc(100% - 10px);
+      margin: 0 auto;
+    }
+
+    .@{dialog-prefix-cls}-content {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100% - 15px);
+    }
+
+    .@{dialog-prefix-cls}-body {
+      overflow-y: auto;
+    }
+  }
+}
