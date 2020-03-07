@@ -3,12 +3,11 @@
 @column-selected-color: @primary-color;
 @column-hover-color: @primary-5;
 @column-border-radius: @border-radius-base;
-@column-border-width: @border-width-base;
+@column-border-width: 3px;
 @column-border-style: @border-style-base;
-@column-border-color: @btn-default-border;
+@column-border-color: @disabled-bg;
 @column-gap: 10px;
 @column-width: 90px;
-@column-head-top-padding: @padding-lg;
 @column-tag-color: @primary-color;
 @column-tag-bg-color: fade(@column-tag-color, 20%);
 @column-tag-border-color: transparent;
@@ -17,7 +16,9 @@
 @column-add-btn-margin: 0 0 @padding-lg 0;
 @column-add-btn-font-size: @font-size-sm;
 @column-disabled-bg-color: @disabled-bg;
-@column-cells-padding: 0 5px 5px 5px;
+@column-cells-padding: 18px 5px 15px 5px;
+@column-cell-font-size: @font-size-sm;
+@column-head-font-size: @font-size-base;
 
 :host {
   display: flex;
@@ -76,10 +77,11 @@
   }
 
   &-head {
-    padding-top: @column-head-top-padding;
+    font-size: @column-head-font-size;
   }
 
   &-cell {
+    font-size: @column-cell-font-size;
     max-width: 100%;
     .truncate;
   }
