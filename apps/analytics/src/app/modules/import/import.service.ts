@@ -1,5 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ApiService, IFile, IStatus, NotificationService, objectsEqual, StorageService } from '@axiom/infrastructure';
+import {
+  ApiService, IFile, IStatus, NotificationService, objectsEqual, removeFromArrayByValue, StorageService
+} from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -14,15 +16,32 @@ export class ImportService implements OnDestroy {
   importOptions: IImportOptions = {} as IImportOptions;
 
   files$: Observable<IFile[]>;
-  dataTypes$ = new BehaviorSubject<IDataType[]>(null);
-  timeTypes$ = new BehaviorSubject<ITimeType[]>(null);
   filePreview$ = new BehaviorSubject<IFilePreview>(null);
   analyzeResponse$ = new BehaviorSubject<IAnalyzeResponse>(null);
-  tagGroup$ = new BehaviorSubject<ITagGroup>(null);
 
-  private _files$ = new BehaviorSubject<IFile[]>([]);
+  dataTypes$ = this._apiService
+    .sendQuery<IDataType[]>({
+      Key: 'List',
+      CollectionKey: 'DataType'
+    });
+
+  timeTypes$ = this._apiService
+    .sendQuery<ITimeType[]>({
+      Key: 'List',
+      CollectionKey: 'TimeType'
+    });
+
+  tagGroup$ = this._apiService
+    .sendQuery<ITagGroup>({
+      Key: 'Object',
+      CollectionKey: 'TagGroup',
+      IdKey: 'TagGroupId',
+      IdValue: this.analyzeOptions.DataTypeId
+    });
+
   private _analyzeTransactionId: string;
   private _sentAnalyzeOptions: IAnalyzeOptions;
+  private _sentPreviewFileId: string;
 
   constructor(
     private _storageService: StorageService,
@@ -32,70 +51,41 @@ export class ImportService implements OnDestroy {
   ) {
     this._subscribeToAnalyze();
 
-    this.files$ = combineLatest([this._files$, this._appService.uploads$])
-      .pipe(
-        map(([a, b]) => {
-          return [...a, ...b];
-        })
-      );
-
-    this.getFiles();
-    this.getDataTypes();
-    this.getTimeTypes();
-  }
-
-  getFiles() {
-    this._apiService
+    const files$ = this._apiService
       .sendQuery<IFile[]>({
         Key: 'List',
         CollectionKey: 'File',
         FilterKey: 'WorkspaceId',
         FilterValue: this._appService.workspaceId
-      })
-      .then(files => {
-        const fruits = ['Açaí', 'Akee', 'Apple', 'Apricot', 'Avocado', 'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Black sapote', 'Blueberry', 'Boysenberry', 'Cactus pear', 'Crab apple', 'Currant', 'Cherry', 'Chico fruit', 'Cloudberry', 'Coconut', 'Cranberry', 'Damson', 'Durian', 'Elderberry', 'Feijoa', 'Fig', 'Goji berry', 'Gooseberry', 'Grape', 'Raisin', 'Grapefruit', 'Guava'];
-        const fruitFiles = fruits.map(fruit => <IFile> {
-          FileName: fruit + '.csv',
-          FileId: fruit,
-          WorkspaceId: 'workspace'
-        });
-        this._files$.next([...files, ...fruitFiles]);
       });
-  }
 
-  getDataTypes() {
-    this._apiService
-      .sendQuery<IDataType[]>({
-        Key: 'List',
-        CollectionKey: 'DataType'
-      })
-      .then(dataTypes => {
-        this.dataTypes$.next(dataTypes);
-      });
-  }
-
-  getTimeTypes() {
-    this._apiService
-      .sendQuery<ITimeType[]>({
-        Key: 'List',
-        CollectionKey: 'TimeType'
-      })
-      .then(timeTypes => {
-        this.timeTypes$.next(timeTypes);
-      });
+    this.files$ = combineLatest([files$, this._appService.uploads$])
+      .pipe(
+        map(([a, b]) => {
+          return [...a, ...b];
+        })
+      );
   }
 
   previewFile() {
+    if (this.analyzeOptions.FileId === this._sentPreviewFileId) {
+      return;
+    }
+
+    this._sentPreviewFileId = this.analyzeOptions.FileId;
+
     this._apiService
       .sendQuery<string[][]>({
         Key: 'PreviewFile',
         FileId: this.analyzeOptions.FileId
       })
+      .toPromise()
       .then(preview => {
         this.filePreview$.next({ Preview: preview });
       })
       .catch(() => {
         this.filePreview$.next({ Error: 'Failed to preview file.' });
+        this._sentPreviewFileId = null;
       });
   }
 
@@ -112,6 +102,7 @@ export class ImportService implements OnDestroy {
         });
     }
 
+    this._cleanAnalyzeOptions();
     this._sentAnalyzeOptions = { ...this.analyzeOptions };
 
     this._apiService
@@ -119,23 +110,11 @@ export class ImportService implements OnDestroy {
         ...this.analyzeOptions,
         Key: 'AnalyzeFile'
       })
+      .toPromise()
       .then(command => this._analyzeTransactionId = command.TransactionId)
       .catch(() => {
         this.analyzeResponse$.next({ Error: 'Failed to analyze file.' });
         this._sentAnalyzeOptions = null;
-      });
-  }
-
-  getTagGroup() {
-    this._apiService
-      .sendQuery<ITagGroup>({
-        Key: 'Object',
-        CollectionKey: 'TagGroup',
-        IdKey: 'TagGroupId',
-        IdValue: this.analyzeOptions.DataTypeId
-      })
-      .then(tagGroup => {
-        this.tagGroup$.next(tagGroup);
       });
   }
 
@@ -146,12 +125,19 @@ export class ImportService implements OnDestroy {
         Key: 'ImportFile',
         WorkspaceId: this._appService.workspaceId
       })
+      .toPromise()
       .catch(() => {
         // TODO RK: Notify user of error
       });
   }
 
   ngOnDestroy() {}
+
+  private _cleanAnalyzeOptions() {
+    this.analyzeOptions.IndexColumns?.forEach(indexColumn => {
+      removeFromArrayByValue(this.analyzeOptions.DataColumns, indexColumn);
+    });
+  }
 
   private _subscribeToAnalyze() {
     this._notificationService.$
@@ -170,6 +156,7 @@ export class ImportService implements OnDestroy {
           case 'Completed':
             this._apiService
               .sendQuery<IAnalysisError[]>(status.ResultQuery)
+              .toPromise()
               .then(analysis => {
                 this.analyzeResponse$.next({ Analysis: analysis });
               })

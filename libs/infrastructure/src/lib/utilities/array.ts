@@ -7,3 +7,15 @@ export function toggleItemInArray(array: any[], item: any) {
     array.splice(index, 1);
   }
 }
+
+export function removeFromArrayByValue(array: any[], value: any) {
+  array = array || [];
+  const index = array.indexOf(value);
+
+  if (index !== -1) {
+    array.splice(index, 1);
+    return true;
+  }
+
+  return false;
+}

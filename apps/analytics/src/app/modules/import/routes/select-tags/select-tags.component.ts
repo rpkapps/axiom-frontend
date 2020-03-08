@@ -14,7 +14,7 @@ export class SelectTagsComponent {
     private _router: Router,
     private _route: ActivatedRoute
   ) {
-    importService.getTagGroup();
+    importService.analyzeFile();
   }
 
   get columnsToShow() {

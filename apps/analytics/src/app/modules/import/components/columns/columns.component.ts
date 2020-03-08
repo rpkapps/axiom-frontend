@@ -21,6 +21,7 @@ export class ColumnsComponent {
   @Input() @InputBoolean() selectable: boolean;
   @Input() @InputBoolean() showToggleAll: boolean;
   @Input() selected: number[] = [];
+  @Input() selectLimit: number;
   @Output() selectedChange = new EventEmitter<number[]>();
 
   allSelected: boolean;
@@ -35,9 +36,17 @@ export class ColumnsComponent {
 
   onColumnClick(columnIndex: number) {
     this.selected = this.selected || [];
-    toggleItemInArray(this.selected, columnIndex);
+    const foundIndex = this.selected.indexOf(columnIndex);
+
+    if (foundIndex !== -1) {
+      this.selected.splice(foundIndex, 1);
+      this.selectedChange.next(this.selected);
+    } else if (this.selected.length !== this.selectLimit) {
+      this.selected.push(columnIndex);
+      this.selectedChange.next(this.selected);
+    }
+
     this.allSelected = this._retrieveSelectableColumns().length === this.selected.length;
-    this.selectedChange.next(this.selected);
   }
 
   onTagsChange(columnIndex: number, tags: string[]) {
