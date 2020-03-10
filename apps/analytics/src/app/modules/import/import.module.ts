@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { UiPipesModule } from '@axiom/ui';
 import {
-  NzAlertModule, NzButtonModule, NzFormModule, NzIconModule, NzInputModule, NzModalModule, NzSelectModule,
-  NzStepsModule, NzTagModule, NzTypographyModule
+  NzAlertModule, NzAutocompleteModule, NzButtonModule, NzFormModule, NzIconModule, NzInputModule, NzModalModule,
+  NzSelectModule, NzStepsModule, NzTagModule, NzTypographyModule
 } from 'ng-zorro-antd';
 import { ColumnComponent } from './components/columns/column/column.component';
 import { ColumnsComponent } from './components/columns/columns.component';
@@ -38,10 +39,12 @@ import { SettingsComponent } from './routes/settings/settings.component';
     NzIconModule,
     NzFormModule,
     NzInputModule,
+    NzAutocompleteModule,
     NzSelectModule,
     NzButtonModule,
     NzAlertModule,
     NzTagModule,
+    UiPipesModule,
     RouterModule.forChild([
       {
         path: '',

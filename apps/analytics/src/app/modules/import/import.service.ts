@@ -42,14 +42,6 @@ export class ImportService implements OnDestroy {
       )
     );
 
-  tagGroup$ = this._apiService
-    .sendQuery<ITagGroup>({
-      Key: 'Object',
-      CollectionKey: 'TagGroup',
-      IdKey: 'TagGroupId',
-      IdValue: this.analyzeOptions.DataTypeId
-    });
-
   private _analyzeTransactionId: string;
   private _sentAnalyzeOptions: IAnalyzeOptions;
   private _sentPreviewFileId: string;
@@ -76,6 +68,16 @@ export class ImportService implements OnDestroy {
           return [...a, ...b];
         })
       );
+  }
+
+  getTagGroup() {
+    return this._apiService
+      .sendQuery<ITagGroup>({
+        Key: 'Object',
+        CollectionKey: 'TagGroup',
+        IdKey: 'TagGroupId',
+        IdValue: this.analyzeOptions.DataTypeId
+      });
   }
 
   previewFile() {

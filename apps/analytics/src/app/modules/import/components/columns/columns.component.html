@@ -7,6 +7,7 @@
   <ng-container *ngFor="let column of columns; let index = index">
     <lx-column
       *ngIf="isColumnVisible(index)"
+      [availableTags]="availableTags"
       [cells]="column"
       [header]="'Column ' + index"
       [selectable]="selectable"
@@ -14,6 +15,7 @@
       [taggable]="taggable"
       [tags]="tags && tags[index]"
       (click)="selectable && onColumnClick(index)"
+      (tagAdd)="tagAdd.emit($event)"
       (tagsChange)="onTagsChange(index, $event)"></lx-column>
   </ng-container>
 </div>

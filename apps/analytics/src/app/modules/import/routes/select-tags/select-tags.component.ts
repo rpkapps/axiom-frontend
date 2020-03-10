@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { removeDuplicateItemsFromArray } from '@axiom/infrastructure';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ImportService } from '../../import.service';
 
 @Component({
@@ -17,6 +20,15 @@ export class SelectTagsComponent {
     importService.analyzeFile();
   }
 
+  addedTags$ = new BehaviorSubject<string[]>([]);
+  availableTags$ = combineLatest([this.importService.getTagGroup(), this.addedTags$])
+    .pipe(
+      map(([a, b]) => {
+        console.log(a, b);
+        return removeDuplicateItemsFromArray([...a.Tags, ...b]);
+      })
+    );
+
   get columnsToShow() {
     const {IndexColumns, DataColumns} = this.importService.analyzeOptions;
     return [...(IndexColumns || []), ...(DataColumns || [])];
@@ -24,5 +36,13 @@ export class SelectTagsComponent {
 
   onBackClick() {
     this._router.navigate(['../columns'], { relativeTo: this._route });
+  }
+
+  onTagAdd(tag: string) {
+    const addedTags = this.addedTags$.getValue();
+
+    if (!addedTags.includes(tag)) {
+      this.addedTags$.next([...addedTags, tag])
+    }
   }
 }

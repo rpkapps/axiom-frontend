@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
-import { toggleItemInArray } from '@axiom/infrastructure';
 import { InputBoolean } from 'ng-zorro-antd';
 import { IColumnTags } from '../../symbols';
 
@@ -16,7 +15,9 @@ export class ColumnsComponent {
 
   @Input() @InputBoolean() taggable: boolean;
   @Input() tags: IColumnTags = {};
+  @Input() availableTags: string[];
   @Output() tagsChange = new EventEmitter<IColumnTags>();
+  @Output() tagAdd = new EventEmitter<string>();
 
   @Input() @InputBoolean() selectable: boolean;
   @Input() @InputBoolean() showToggleAll: boolean;

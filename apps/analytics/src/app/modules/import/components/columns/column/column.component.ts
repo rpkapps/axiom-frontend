@@ -21,7 +21,9 @@ export class ColumnComponent {
 
   @Input() @InputBoolean() taggable: boolean;
   @Input() tags: string[];
+  @Input() availableTags: string[];
   @Output() tagsChange = new EventEmitter<string[]>();
+  @Output() tagAdd = new EventEmitter<string>();
 
   @Input() @InputBoolean() selectable: boolean;
   @Input() selected: boolean;
@@ -49,6 +51,7 @@ export class ColumnComponent {
     if (this.newTag && !this.tags.includes(this.newTag)) {
       this.tags = [...(this.tags || []), this.newTag];
       this.tagsChange.emit(this.tags);
+      this.tagAdd.emit(this.newTag);
       this.newTag = '';
     }
   }
