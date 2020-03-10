@@ -9,6 +9,7 @@ import { InputBoolean } from 'ng-zorro-antd';
 })
 export class StepsComponent {
   @Input() step: number;
+  @Input() header: string;
   @Input() @InputBoolean() showBack = false;
   @Input() @InputBoolean() backDisabled = false;
   @Input() @InputBoolean() showNext = false;
