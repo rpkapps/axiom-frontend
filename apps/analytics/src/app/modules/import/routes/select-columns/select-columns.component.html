@@ -1,4 +1,10 @@
-<lx-steps showBack showNext [step]="2" (back)="onBackClick()" (next)="onNextClick()">
+<lx-steps
+  showBack
+  showNext
+  [header]="importService.selectedFile?.FileName"
+  [step]="2"
+  (back)="onBackClick()"
+  (next)="onNextClick()">
   <h2 class="u-text-center" nz-title>Selected data columns to import</h2>
   <p class="u-text-center" nz-paragraph>Columns not selected will be excluded from analysis.</p>
   <ng-container *ngIf="importService.filePreview$ | async as filePreview">

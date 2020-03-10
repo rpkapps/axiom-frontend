@@ -24,6 +24,7 @@ export class SelectFileComponent {
   }
 
   onFileClick(file: IFile) {
+    this.importService.selectedFile = file;
     this.importService.analyzeOptions.FileId = file.FileId;
     this._router.navigate(['../settings'], { relativeTo: this._route });
   }

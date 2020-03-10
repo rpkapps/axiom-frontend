@@ -12,6 +12,7 @@ import {
 
 @Injectable()
 export class ImportService implements OnDestroy {
+  selectedFile: IFile;
   analyzeOptions: IAnalyzeOptions = {} as IAnalyzeOptions;
   importOptions: IImportOptions = {} as IImportOptions;
 

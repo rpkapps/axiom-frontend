@@ -1,4 +1,11 @@
-<lx-steps [step]="0" showNext showBack (back)="onBackClick()" (next)="onFormSubmit()" [nextDisabled]="form.invalid">
+<lx-steps
+  showBack
+  showNext
+  [header]="importService.selectedFile?.FileName"
+  [nextDisabled]="form.invalid"
+  [step]="0"
+  (back)="onBackClick()"
+  (next)="onFormSubmit()">
   <form #form="ngForm" class="settings-form" nz-form nzLayout="vertical" (ngSubmit)="onFormSubmit()">
     <nz-form-item>
       <nz-form-label>Select a data type</nz-form-label>
