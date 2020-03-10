@@ -1,8 +1,12 @@
-<button class="step-back-button" nz-button nzSize="small" nzType="link" [disabled]="backDisabled" (click)="back.next()">
-  <i nz-icon nzTheme="outline" nzType="left"></i>Back
-</button>
+<div class="step-title-wrapper">
+  <button class="step-back-button" nz-button nzSize="small" nzType="link" [disabled]="backDisabled" (click)="back.next()">
+    <i nz-icon nzTheme="outline" nzType="left"></i>Back
+  </button>
 
-<nz-steps class="steps" nzSize="small" [nzCurrent]="step">
+  <h4 class="step-title">{{ header }}</h4>
+</div>
+
+<nz-steps nz-title class="steps" nzSize="small" [nzCurrent]="step">
   <nz-step nzTitle="Choose Settings"></nz-step>
   <nz-step nzTitle="Select Index"></nz-step>
   <nz-step nzTitle="Select Columns"></nz-step>

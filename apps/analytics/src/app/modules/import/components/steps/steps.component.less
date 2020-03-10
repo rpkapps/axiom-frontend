@@ -6,10 +6,6 @@
 .step {
   &-back-button {
     padding: 0;
-
-    + .steps {
-      margin-top: 32px;
-    }
   }
 
   &-next-button {
@@ -19,6 +15,19 @@
 
   &-content {
     margin-bottom: 14px;
+  }
+
+  &-title {
+    position: absolute;
+    display: inline-block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    &-wrapper {
+      position: relative;
+      margin-bottom: 32px;
+    }
   }
 }
 
