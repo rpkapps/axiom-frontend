@@ -4,7 +4,7 @@ import {
 } from '@axiom/infrastructure';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, tap } from 'rxjs/operators';
 import { AppService } from '../../app.service';
 import {
   IAnalysisError, IAnalyzeOptions, IAnalyzeResponse, IDataType, IFilePreview, IImportOptions, ITagGroup, ITimeType
@@ -24,13 +24,23 @@ export class ImportService implements OnDestroy {
     .sendQuery<IDataType[]>({
       Key: 'List',
       CollectionKey: 'DataType'
-    });
+    })
+    .pipe(
+      tap(dataTypes =>
+        this.analyzeOptions.DataTypeId = this.analyzeOptions.DataTypeId ?? dataTypes[0]?.DataTypeId
+      )
+    );
 
   timeTypes$ = this._apiService
     .sendQuery<ITimeType[]>({
       Key: 'List',
       CollectionKey: 'TimeType'
-    });
+    })
+    .pipe(
+      tap(timeTypes =>
+        this.analyzeOptions.TimeTypeId = this.analyzeOptions.TimeTypeId ?? timeTypes[0]?.TimeTypeId
+      )
+    );
 
   tagGroup$ = this._apiService
     .sendQuery<ITagGroup>({
