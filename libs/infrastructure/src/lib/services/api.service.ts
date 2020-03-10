@@ -39,7 +39,7 @@ export class ApiService {
       .post(
         `${ config.ApiUrl }/upload`,
         formData,
-        { responseType: 'arraybuffer', observe: 'events' }
+        { responseType: 'arraybuffer', observe: 'events', reportProgress: true }
       )
       .pipe(
         filter(event =>

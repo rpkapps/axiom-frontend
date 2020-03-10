@@ -3,16 +3,27 @@
 <div *ngIf="importService.files$ | async as files" class="file-list">
   <button
     *ngFor="let file of files; trackBy: trackByFileId"
+    [disabled]="file.Status === 'Uploading' || file.Status === 'Error'"
     class="file"
+    [class.file-error]="file.Status === 'Error'"
     [class.file-selected]="file.FileId === importService.analyzeOptions.FileId"
     (click)="onFileClick(file)">
     <div class="file-inner">
       <i class="file-icon" nz-icon nzTheme="outline" nzType="file-text"></i>
-      <span class="file-name">{{ file.FileName }}</span>
+      <div class="file-name-wrapper">
+        <span class="file-name">{{ file.FileName }}</span>
+        <span *ngIf="file.Status === 'Uploading'"> ({{ file.Progress }}%)</span>
+      </div>
     </div>
   </button>
 </div>
 
 <div class="u-text-center">
-  <button nz-button nzType="link">Upload New File</button>
+  <input
+    #fileInput
+    class="ui-file-upload-input"
+    style="display: none"
+    type="file"
+    (change)="appService.upload(fileInput.files[0])">
+  <button nz-button nzType="link" (click)="fileInput.click()">Upload New File</button>
 </div>

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IFile } from '@axiom/infrastructure';
+import { AppService } from '../../../../app.service';
 import { ImportService } from '../../import.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class SelectFileComponent {
 
   constructor(
     public importService: ImportService,
+    public appService: AppService,
     private _router: Router,
     private _route: ActivatedRoute,
   ) { }

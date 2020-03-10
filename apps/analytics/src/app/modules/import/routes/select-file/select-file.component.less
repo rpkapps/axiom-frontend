@@ -2,6 +2,8 @@
 
 @file-selected-color: @primary-color;
 @file-hover-color: @primary-5;
+@file-disabled-color: @disabled-color;
+@file-error-color: @error-color;
 @file-border-radius: @border-radius-base;
 @file-border-width: @border-width-base;
 @file-border-style: @border-style-base;
@@ -27,6 +29,7 @@
 
   &-inner {
     margin-bottom: 18px;
+    width: 100%;
   }
 
   &-selected {
@@ -37,6 +40,15 @@
   &:hover,
   &:focus {
     color: @file-hover-color;
+  }
+
+  &:disabled {
+    cursor: default;
+    color: @file-disabled-color;
+  }
+
+  &-error:disabled {
+    color: @file-error-color;
   }
 
   &-list {
@@ -53,5 +65,10 @@
   &-name {
     width: 100%;
     .truncate;
+
+    &-wrapper {
+      display: flex;
+      width: 100%;
+    }
   }
 }
