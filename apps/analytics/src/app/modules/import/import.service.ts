@@ -73,6 +73,18 @@ export class ImportService implements OnDestroy {
   get skipSelectIndexStep() {
     return this.analyzeOptions.TimeTypeId === 'notime';
   }
+
+  get selectIndexLimit() {
+    switch (this.analyzeOptions.TimeTypeId) {
+      case 'onetime':
+        return 1;
+      case 'twotime':
+        return 2;
+      default:
+        return 2;
+    }
+  }
+
   getTagGroup() {
     return this._apiService
       .sendQuery<ITagGroup>({

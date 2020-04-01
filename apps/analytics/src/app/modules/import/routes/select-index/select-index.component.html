@@ -12,6 +12,7 @@
     <ng-template #previewTemplate>
       <lx-columns
         selectable
+        [selectLimit]="importService.selectIndexLimit"
         [(selected)]="importService.analyzeOptions.IndexColumns"
         [columns]="filePreview.Preview"></lx-columns>
     </ng-template>
