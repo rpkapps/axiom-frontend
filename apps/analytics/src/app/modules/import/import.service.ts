@@ -181,7 +181,7 @@ export class ImportService implements OnDestroy {
           case 'InProgress':
             this.analyzeResponse$.next({ Progress: status.Progress });
             break;
-          case 'Completed':
+          case 'Complete':
             this._apiService
               .sendQuery<IAnalysisError[]>(status.ResultQuery)
               .toPromise()

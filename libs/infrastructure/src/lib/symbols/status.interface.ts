@@ -3,7 +3,7 @@ import { INotification } from './notification.interface';
 
 export interface IStatus extends INotification {
   LastModified: string;
-  State: 'InProgress' | 'Completed' | 'Failed';
+  State: 'InProgress' | 'Complete' | 'Failed';
   Status: any;
   Progress: number;
   ResultQuery: any;
