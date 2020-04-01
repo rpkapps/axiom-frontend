@@ -24,8 +24,7 @@ export class SelectTagsComponent {
   availableTags$ = combineLatest([this.importService.getTagGroup(), this.addedTags$])
     .pipe(
       map(([a, b]) => {
-        console.log(a, b);
-        return removeDuplicateItemsFromArray([...a.Tags, ...b]);
+        return removeDuplicateItemsFromArray([...a.Tags, ...b]).sort();
       })
     );
 
@@ -38,11 +37,11 @@ export class SelectTagsComponent {
     this._router.navigate(['../columns'], { relativeTo: this._route });
   }
 
-  onTagAdd(tag: string) {
-    const addedTags = this.addedTags$.getValue();
+  onTagsChange() {
+    const tags = Object.values(this.importService.importOptions.ColumnTags || {})
+      // @ts-ignore
+      .flat();
 
-    if (!addedTags.includes(tag)) {
-      this.addedTags$.next([...addedTags, tag])
-    }
+    this.addedTags$.next(tags);
   }
 }

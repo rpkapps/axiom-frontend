@@ -19,3 +19,7 @@ export function removeFromArrayByValue(array: any[], value: any) {
 
   return false;
 }
+
+export function removeDuplicateItemsFromArray(array: any[]) {
+  return [...new Set(array)];
+}

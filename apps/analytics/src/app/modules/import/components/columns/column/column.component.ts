@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, Output, ViewChild
 } from '@angular/core';
-import { InputBoolean } from 'ng-zorro-antd';
+import { InputBoolean, NzAutocompleteComponent, NzAutocompleteTriggerDirective } from 'ng-zorro-antd';
 
 @Component({
   selector: 'lx-column',
@@ -32,6 +32,7 @@ export class ColumnComponent {
 
   @ViewChild('inputElement', { static: false }) inputElement: ElementRef<HTMLInputElement>;
   @ViewChild('buttonElement', { static: false }) buttonElement: ElementRef<HTMLButtonElement>;
+  @ViewChild('inputElement', { static: false, read: NzAutocompleteTriggerDirective }) autoCompleteTrigger: NzAutocompleteTriggerDirective;
 
   inputVisible: boolean;
   newTag = '';
@@ -48,7 +49,11 @@ export class ColumnComponent {
   onInputEnter() {
     this.tags = this.tags || [];
 
-    if (this.newTag && !this.tags.includes(this.newTag)) {
+    if (
+      this.newTag
+      && this.newTag.replace(/\s/g, '').length
+      && !this.tags.includes(this.newTag)
+    ) {
       this.tags = [...(this.tags || []), this.newTag];
       this.tagsChange.emit(this.tags);
       this.tagAdd.emit(this.newTag);
@@ -65,6 +70,12 @@ export class ColumnComponent {
     if (this.tags) {
       this.tags.splice(tagIndex, 1);
       this.tagsChange.emit(this.tags);
+    }
+  }
+
+  openAutoCompleteDropdown() {
+    if (!this.autoCompleteTrigger.nzAutocomplete.isOpen) {
+      this.autoCompleteTrigger.openPanel();
     }
   }
 }

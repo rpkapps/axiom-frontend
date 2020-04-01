@@ -21,7 +21,8 @@
     [(ngModel)]="newTag"
     [nzAutocomplete]="auto"
     (blur)="onInputBlur()"
-    (keydown.enter)="onInputEnter()" />
+    (keydown.enter)="onInputEnter()"
+    (ngModelChange)="openAutoCompleteDropdown()" />
   <nz-autocomplete #auto [nzDataSource]="availableTags | uiFilter:newTag"></nz-autocomplete>
 
   <nz-tag

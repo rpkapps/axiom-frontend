@@ -16,7 +16,7 @@
         [(tags)]="importService.importOptions.ColumnTags"
         [columns]="filePreview.Preview"
         [availableTags]="availableTags$ | async"
-        (tagAdd)="onTagAdd($event)"
+        (tagsChange)="onTagsChange()"
         [showColumns]="columnsToShow"></lx-columns>
     </ng-template>
   </ng-container>
