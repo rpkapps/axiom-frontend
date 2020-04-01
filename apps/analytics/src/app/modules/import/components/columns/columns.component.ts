@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges
+} from '@angular/core';
 import { InputBoolean } from 'ng-zorro-antd';
 import { IColumnTags } from '../../symbols';
 
@@ -8,7 +10,7 @@ import { IColumnTags } from '../../symbols';
   styleUrls: ['./columns.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ColumnsComponent {
+export class ColumnsComponent implements OnChanges {
   @Input() columns: string[][];
   @Input() showColumns: number[];
   @Input() hideColumns: number[];
@@ -29,6 +31,12 @@ export class ColumnsComponent {
 
   constructor(private _cdr: ChangeDetectorRef) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.columns || changes.showColumns || changes.hideColumns || changes.selected) {
+      this._updateAllSelectedFlag();
+    }
+  }
+
   onToggleAllClick() {
     this.selected = !this.allSelected ? this._retrieveSelectableColumns() : [];
     this.allSelected = !this.allSelected;
@@ -47,7 +55,7 @@ export class ColumnsComponent {
       this.selectedChange.next(this.selected);
     }
 
-    this.allSelected = this._retrieveSelectableColumns().length === this.selected.length;
+    this._updateAllSelectedFlag();
   }
 
   onTagsChange(columnIndex: number, tags: string[]) {
@@ -63,6 +71,10 @@ export class ColumnsComponent {
   isColumnVisible(columnIndex: number) {
     return !this.hideColumns?.includes(columnIndex)
       && (!this.showColumns || this.showColumns.includes(columnIndex));
+  }
+
+  private _updateAllSelectedFlag() {
+    this.allSelected = this._retrieveSelectableColumns().length === this.selected?.length;
   }
 
   private _retrieveSelectableColumns() {
