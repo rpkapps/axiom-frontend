@@ -15,7 +15,11 @@ export class SelectIndexComponent {
     private _router: Router,
     private _route: ActivatedRoute
   ) {
-    this.importService.previewFile();
+    if (this.importService.skipSelectIndexStep) {
+      this.onNextClick();
+    } else {
+      this.importService.previewFile();
+    }
   }
 
   onBackClick() {

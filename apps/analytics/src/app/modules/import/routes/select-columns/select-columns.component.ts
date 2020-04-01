@@ -14,10 +14,15 @@ export class SelectColumnsComponent {
     public importService: ImportService,
     private _router: Router,
     private _route: ActivatedRoute
-  ) {}
+  ) {
+    this.importService.previewFile();
+  }
 
   onBackClick() {
-    this._router.navigate(['../index'], { relativeTo: this._route });
+    this._router.navigate(
+      [this.importService.skipSelectIndexStep ? '../settings' : '../index'],
+      { relativeTo: this._route }
+    );
   }
 
   onNextClick() {

@@ -70,6 +70,9 @@ export class ImportService implements OnDestroy {
       );
   }
 
+  get skipSelectIndexStep() {
+    return this.analyzeOptions.TimeTypeId === 'notime';
+  }
   getTagGroup() {
     return this._apiService
       .sendQuery<ITagGroup>({
